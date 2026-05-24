@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reason Menu Custom</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
         * {
             box-sizing: border-box;
@@ -31,31 +31,42 @@
             background: rgba(13, 14, 18, 0.96);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 14px;
-            /* Shadow adânc cu un glow subtil violet pe fundal */
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 
-                        0 0 50px rgba(78, 5, 160, 0.1);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(78, 5, 160, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
 
-            --macho-glow: rgba(78, 5, 160, 0.3);
-
-            /* [ANIMATION] Animație modernă de deschidere direct pe element (fără clase secundare) */
-            animation: machoOpen 0.35s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-            transform-origin: top left;
+            /* FIX: Meniul pornește vizibil nativ ca să nu mai rămână blocat pe ecran */
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            
+            /* [ANIMATION] Animație automată de drop-down și fade-in la încărcare */
+            animation: machoOpenAnimation 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            
+            /* Tranziție rapidă dedicată exclusiv pentru închiderea/deschiderea din Lua */
+            transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* [ANIMATION KEYFRAMES] Intrare fluidă: apare din transparență, vine ușor de sus și se mărește fin */
-        @keyframes machoOpen {
+        /* [ANIMATION KEYFRAMES] Efectul de deschidere automat la pornire */
+        @keyframes machoOpenAnimation {
             from {
                 opacity: 0;
-                transform: translateY(-15px) scale(0.97);
+                transform: translateY(-20px) scale(0.96);
             }
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
+        }
+
+        /* Clasa aplicată din Lua/Browser când vrei să ascunzi meniul cu animație */
+        .menu-box.menu-hidden {
+            opacity: 0 !important;
+            transform: translateY(20px) scale(0.96) !important;
+            pointer-events: none !important;
         }
 
         .menu-banner {
@@ -65,15 +76,6 @@
             background-size: cover;
             background-position: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            
-            /* [ANIMATION] Efect elegant de adâncime pe banner la pornire */
-            animation: bannerReveal 0.6s ease-out;
-            transform-origin: top;
-        }
-        
-        @keyframes bannerReveal {
-            from { transform: scaleY(1.2); opacity: 0; }
-            to { transform: scaleY(1); opacity: 1; }
         }
 
         .categories-bar {
@@ -93,7 +95,7 @@
             color: rgba(255, 255, 255, 0.3);
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            transition: color 0.25s ease, background-color 0.25s ease;
+            transition: color 0.25s ease;
             position: relative;
         }
 
@@ -103,7 +105,7 @@
             box-shadow: none; 
         }
         
-        /* [ANIMATION] Indicator modern sub tab sub formă de linie glisantă */
+        /* Linie neon sub tabul activ */
         .category-tab::after {
             content: '';
             position: absolute;
@@ -112,7 +114,7 @@
             width: 0;
             height: 2px;
             background-color: #7289da;
-            transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: width 0.25s cubic-bezier(0.25, 1, 0.5, 1);
             transform: translateX(-50%);
             box-shadow: 0 0 10px #7289da;
         }
@@ -135,13 +137,6 @@
             display: none;
             flex-direction: column;
             gap: 8px;
-            /* [ANIMATION] Tranziție discretă la schimbarea categoriilor (Q/E) */
-            animation: panelFade 0.25s ease-out;
-        }
-        
-        @keyframes panelFade {
-            from { opacity: 0; transform: translateX(8px); }
-            to { opacity: 1; transform: translateX(0); }
         }
 
         .tab-panel.active {
@@ -150,7 +145,7 @@
 
         .menu-option {
             width: 100%;
-            background: rgba(255, 255, 255, 0.015);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.03);
             border-radius: 10px; 
             padding: 16px 20px;
@@ -160,21 +155,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            opacity: 0.3; 
-            /* Tranziție rapidă de 0.15s ca tastele din Lua să răspundă instantaneu */
-            transition: all 0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
+            opacity: 0.35; 
+            transition: all 0.1s linear; 
             position: relative;
         }
 
-        /* [ANIMATION & ELEGANCE] Stilul modern FOCUSED când treci cu săgețile */
+        /* Stilul modern cu glow violet la selectare */
         .menu-option.focused {
             opacity: 1; 
             color: #ffffff;
             background: rgba(78, 5, 160, 0.15);
             border-color: rgba(114, 137, 218, 0.5); 
             font-weight: 600;
-            box-shadow: 0 0 25px var(--macho-glow), 
-                        inset 0 0 10px rgba(114, 137, 218, 0.1);
+            box-shadow: 0 0 25px rgba(78, 5, 160, 0.3);
             transform: scale(1.015);
         }
 
@@ -184,7 +177,6 @@
             color: rgba(255, 255, 255, 0.15);
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: color 0.2s ease;
         }
 
         .menu-option.focused .status-tag {
@@ -195,7 +187,7 @@
 </head>
 <body>
 
-    <div class="menu-box">
+    <div id="macho-main-box" class="menu-box">
         <div class="menu-banner"></div>
 
         <div class="categories-bar">
@@ -225,9 +217,16 @@
 
     <script>
         const categories = Array.from(document.querySelectorAll('.category-tab'));
+        const menuBox = document.getElementById('macho-main-box');
 
-        // Logica ta originală de JS neatinsă, exact așa cum ai trimis-o!
+        // Variabile interne folosite doar când testezi în Google Chrome
+        let bOpen = true, bTab = 0, bOpt = 0;
+        const bLimits = { [0]: 2, [1]: 1, [2]: 1 };
+
+        // [LOGIC UNTOUCHED] Funcția apelată din Lua prin MachoExecuteDuiScript
         window.updateSelection = function(tabIdx, optionIdx) {
+            bTab = tabIdx; bOpt = optionIdx;
+
             // 1. Mută tab-ul activ (Q / E)
             categories.forEach((cat, idx) => {
                 if (idx === tabIdx) {
@@ -251,6 +250,45 @@
                 }
             });
         };
+
+        // Modificăm clasa de animație invers, bazată pe ascundere, ca să ruleze curat din Lua
+        window.setMenuState = function(visible) {
+            if (visible) {
+                menuBox.classList.remove('menu-hidden');
+            } else {
+                menuBox.classList.add('menu-hidden');
+            }
+        };
+
+        // NAVIGARE DE TEST ÎN BROWSER (Apeși tastele direct când deschizi fișierul în Chrome)
+        window.addEventListener('keydown', function(e) {
+            // Tasta INSERT -> Închide/Deschide meniul pe ecran pe browser
+            if (e.key === "Insert") {
+                bOpen = !bOpen;
+                window.setMenuState(bOpen);
+                return;
+            }
+
+            if (!bOpen) return;
+
+            if (e.key === "q" || e.key === "Q") {
+                if (bTab > 0) { bTab--; bOpt = 0; window.updateSelection(bTab, bOpt); }
+            }
+            else if (e.key === "e" || e.key === "E") {
+                if (bTab < 2) { bTab++; bOpt = 0; window.updateSelection(bTab, bOpt); }
+            }
+            else if (e.key === "ArrowUp") {
+                if (bOpt > 0) { bOpt--; window.updateSelection(bTab, bOpt); }
+            }
+            else if (e.key === "ArrowDown") {
+                if (bOpt < bLimits[bTab]) { bOpt++; window.updateSelection(bTab, bOpt); }
+            }
+            else if (e.key === "Enter") {
+                const activePanel = document.getElementById(`panel-${bTab}`);
+                const optionText = activePanel.querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
+                console.log(`[TEST BROWSER] Executat: ${optionText}`);
+            }
+        });
     </script>
 </body>
 </html>
