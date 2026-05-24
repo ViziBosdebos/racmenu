@@ -102,8 +102,10 @@
             justify-content: space-between;
             align-items: center;
             opacity: 0.35; 
+            transition: all 0.1s ease;
         }
 
+        /* Stilul aplicat opțiunii selectate din taste */
         .menu-option.focused {
             opacity: 1; 
             background: rgba(114, 137, 218, 0.12);
@@ -129,38 +131,38 @@
         <div class="menu-banner"></div>
 
         <div class="categories-bar">
-            <div class="category-tab active" data-index="0">Self [Q]</div>
-            <div class="category-tab" data-index="1">Weapons</div>
-            <div class="category-tab" data-index="2">Visuals [E]</div>
+            <div class="category-tab active">Self</div>
+            <div class="category-tab">Weapons</div>
+            <div class="category-tab">Visuals</div>
         </div>
 
         <div class="menu-content">
             <div id="panel-0" class="tab-panel active">
-                <div class="menu-option focused" data-action="godmode"><span>Activare Godmode</span><span class="status-tag">[ENTER]</span></div>
-                <div class="menu-option" data-action="heal"><span>Reface Viață & Armură</span><span class="status-tag">[ENTER]</span></div>
-                <div class="menu-option" data-action="tp_waypoint"><span>Teleport la Waypoint</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option focused"><span>Activare Godmode</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Reface Viață & Armură</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Teleport la Waypoint</span><span class="status-tag">[ENTER]</span></div>
             </div>
 
             <div id="panel-1" class="tab-panel">
-                <div class="menu-option" data-action="give_weapons"><span>Oferă toate armele</span><span class="status-tag">[ENTER]</span></div>
-                <div class="menu-option" data-action="infinite_ammo"><span>Muniție Infinită</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Oferă toate armele</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Muniție Infinită</span><span class="status-tag">[ENTER]</span></div>
             </div>
 
             <div id="panel-2" class="tab-panel">
-                <div class="menu-option" data-action="toggle_esp"><span>Pornește Wallhack (ESP)</span><span class="status-tag">[ENTER]</span></div>
-                <div class="menu-option" data-action="clean_screenshot"><span>Bypass Screenshot</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Pornește Wallhack (ESP)</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Bypass Screenshot</span><span class="status-tag">[ENTER]</span></div>
             </div>
         </div>
     </div>
 
     <script>
         const categories = Array.from(document.querySelectorAll('.category-tab'));
-        let activeTab = 0;
-        let activeOption = 0;
 
-        function updateMenu() {
+        // Funcția globală apelată prin MachoExecuteDuiScript din Lua
+        window.updateSelection = function(tabIdx, optionIdx) {
+            // 1. Mută tab-ul activ (Q / E)
             categories.forEach((cat, idx) => {
-                if (idx === activeTab) {
+                if (idx === tabIdx) {
                     cat.classList.add('active');
                     document.getElementById(`panel-${idx}`).classList.add('active');
                 } else {
@@ -169,60 +171,17 @@
                 }
             });
 
-            const currentPanel = document.getElementById(`panel-${activeTab}`);
+            // 2. Mută opțiunea focalizată (Săgeată Sus / Jos)
+            const currentPanel = document.getElementById(`panel-${tabIdx}`);
             const options = Array.from(currentPanel.querySelectorAll('.menu-option'));
 
-            if (activeOption >= options.length) activeOption = options.length - 1;
-            if (activeOption < 0) activeOption = 0;
-
             options.forEach((opt, idx) => {
-                if (idx === activeOption) {
+                if (idx === optionIdx) {
                     opt.classList.add('focused');
                 } else {
                     opt.classList.remove('focused');
                 }
             });
-        }
-
-        // Funcția de procesare a tastelor (atât fizice cât și cele simulate din Lua)
-        function handleMenuNavigation(keyName) {
-            const currentPanel = document.getElementById(`panel-${activeTab}`);
-            const options = currentPanel.querySelectorAll('.menu-option');
-            const key = keyName.toLowerCase();
-
-            if (key === "arrowup") {
-                if (activeOption > 0) { activeOption--; updateMenu(); }
-            } else if (key === "arrowdown") {
-                if (activeOption < options.length - 1) { activeOption++; updateMenu(); }
-            } else if (key === "enter") {
-                if (options[activeOption]) {
-                    const action = options[activeOption].getAttribute('data-action');
-                    // Executare acțiune vizuală pe ecran
-                    alert("Apasat pe: " + action);
-                }
-            } else if (key === 'q') {
-                if (activeTab > 0) { activeTab--; activeOption = 0; updateMenu(); }
-            } else if (key === 'e') {
-                if (activeTab < categories.length - 1) { activeTab++; activeOption = 0; updateMenu(); }
-            }
-        }
-
-        // Ascultă tastele fizice dacă browserul are focus
-        window.addEventListener('keydown', function(e) {
-            handleMenuNavigation(e.key);
-        });
-
-        // [PUNTE DE INJECTARE - STRUCTURĂ EXCLUSIVĂ MACHO]
-        // Această funcție este apelată de linia MachoExecuteDuiScript din Lua
-        window.simulateKey = function(keyName) {
-            handleMenuNavigation(keyName);
-        };
-
-        window.onMenuToggle = function(isOpen) {
-            if(isOpen) {
-                document.body.style.display = "flex";
-                updateMenu();
-            }
         };
     </script>
 </body>
