@@ -24,6 +24,7 @@
             width: 100vw;
             overflow: hidden;
             padding: 30px;               
+            position: relative;
         }
 
         .menu-box {
@@ -36,33 +37,20 @@
             display: flex;
             flex-direction: column;
             position: relative;
-
-            /* FIX: Meniul pornește vizibil nativ ca să nu mai rămână blocat pe ecran */
             opacity: 1;
             transform: translateY(0) scale(1);
             pointer-events: auto;
             
-            /* [ANIMATION] Animație automată de drop-down și fade-in la încărcare */
             animation: machoOpenAnimation 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            
-            /* Tranziție rapidă dedicată exclusiv pentru închiderea/deschiderea din Lua */
             transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
                         transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* [ANIMATION KEYFRAMES] Efectul de deschidere automat la pornire */
         @keyframes machoOpenAnimation {
-            from {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(-20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Clasa aplicată din Lua/Browser când vrei să ascunzi meniul cu animație */
         .menu-box.menu-hidden {
             opacity: 0 !important;
             transform: translateY(20px) scale(0.96) !important;
@@ -105,7 +93,6 @@
             box-shadow: none; 
         }
         
-        /* Linie neon sub tabul activ */
         .category-tab::after {
             content: '';
             position: absolute;
@@ -119,9 +106,7 @@
             box-shadow: 0 0 10px #7289da;
         }
         
-        .category-tab.active::after {
-            width: 80%; 
-        }
+        .category-tab.active::after { width: 80%; }
 
         .menu-content {
             padding: 22px 20px;
@@ -133,15 +118,8 @@
             background: rgba(13, 14, 18, 0.5);
         }
 
-        .tab-panel {
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .tab-panel.active {
-            display: flex;
-        }
+        .tab-panel { display: none; flex-direction: column; gap: 8px; }
+        .tab-panel.active { display: flex; }
 
         .menu-option {
             width: 100%;
@@ -160,7 +138,6 @@
             position: relative;
         }
 
-        /* Stilul modern cu glow violet la selectare */
         .menu-option.focused {
             opacity: 1; 
             color: #ffffff;
@@ -183,9 +160,114 @@
             color: #7289da; 
             text-shadow: 0 0 8px rgba(114, 137, 218, 0.6);
         }
+
+        /* =========================================================================
+           [TUNNING: CUSTOM COLOR 78, 5, 160 FOR NOTIFICATIONS]
+           ========================================================================= */
+        #notification-container {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 99999;
+            pointer-events: none;
+            width: 280px; 
+        }
+
+        .macho-notify {
+            width: 100%;
+            background: rgba(10, 10, 13, 0.94); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 10px; 
+            
+            --notify-color: rgb(78, 5, 160); /* Salvăm culoarea cerută ca variabilă */
+            
+            /* MODIFICARE: Culoarea exactă cerută de tine pentru margine și glow */
+            border: 1px solid var(--notify-color); 
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 
+                        0 0 18px rgba(78, 5, 160, 0.45), 
+                        inset 0 0 10px rgba(78, 5, 160, 0.15); 
+                        
+            padding: 12px 16px; 
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            pointer-events: auto;
+            position: relative;
+            overflow: hidden;
+
+            animation: notifySlideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            transition: all 0.3s ease;
+        }
+
+        .macho-notify.notify-fade-out {
+            animation: notifySlideOut 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes notifySlideIn {
+            from { opacity: 0; transform: translateX(40px) scale(0.95); filter: blur(3px); }
+            to { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+        }
+
+        @keyframes notifySlideOut {
+            from { opacity: 1; transform: translateX(0) scale(1); }
+            to { opacity: 0; transform: translateX(60px) scale(0.95); filter: blur(3px); }
+        }
+
+        .macho-notify-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Titlul asortat cu noul violet primit de la tine */
+        .macho-notify-title {
+            font-size: 10px; 
+            font-weight: 700;
+            color: #8a1be6; /* Nuanță deschisă asortată pentru text clar */
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            filter: drop-shadow(0 0 5px rgba(78, 5, 160, 0.8));
+        }
+
+        .macho-notify-time {
+            font-size: 8px; 
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.2.5);
+            letter-spacing: 0.5px;
+        }
+
+        .macho-notify-body {
+            font-size: 12px; 
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.4;
+        }
+
+        /* Bara de progres folosește acum culoarea ta pentru bază */
+        .macho-notify-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, rgb(78, 5, 160), #a348ff);
+            box-shadow: 0 0 8px rgb(78, 5, 160);
+            width: 100%;
+            animation: notifyProgressTimer 4s linear forwards;
+        }
+
+        @keyframes notifyProgressTimer {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
     </style>
 </head>
 <body>
+
+    <div id="notification-container"></div>
 
     <div id="macho-main-box" class="menu-box">
         <div class="menu-banner"></div>
@@ -218,16 +300,14 @@
     <script>
         const categories = Array.from(document.querySelectorAll('.category-tab'));
         const menuBox = document.getElementById('macho-main-box');
+        const notifyContainer = document.getElementById('notification-container');
 
-        // Variabile interne folosite doar când testezi în Google Chrome
         let bOpen = true, bTab = 0, bOpt = 0;
         const bLimits = { [0]: 2, [1]: 1, [2]: 1 };
 
-        // [LOGIC UNTOUCHED] Funcția apelată din Lua prin MachoExecuteDuiScript
         window.updateSelection = function(tabIdx, optionIdx) {
             bTab = tabIdx; bOpt = optionIdx;
 
-            // 1. Mută tab-ul activ (Q / E)
             categories.forEach((cat, idx) => {
                 if (idx === tabIdx) {
                     cat.classList.add('active');
@@ -238,7 +318,6 @@
                 }
             });
 
-            // 2. Mută opțiunea focalizată (Săgeată Sus / Jos)
             const currentPanel = document.getElementById(`panel-${tabIdx}`);
             const options = Array.from(currentPanel.querySelectorAll('.menu-option'));
 
@@ -251,7 +330,6 @@
             });
         };
 
-        // Modificăm clasa de animație invers, bazată pe ascundere, ca să ruleze curat din Lua
         window.setMenuState = function(visible) {
             if (visible) {
                 menuBox.classList.remove('menu-hidden');
@@ -260,9 +338,34 @@
             }
         };
 
-        // NAVIGARE DE TEST ÎN BROWSER (Apeși tastele direct când deschizi fișierul în Chrome)
+        window.createMachoNotification = function(title, message) {
+            const notifyBox = document.createElement('div');
+            notifyBox.className = 'macho-notify';
+
+            const acum = new Date();
+            const timpText = `${acum.getHours().toString().padStart(2, '0')}:${acum.getMinutes().toString().padStart(2, '0')}`;
+
+            notifyBox.innerHTML = `
+                <div class="macho-notify-header">
+                    <span class="macho-notify-title">${title}</span>
+                    <span class="macho-notify-time">${timpText}</span>
+                </div>
+                <div class="macho-notify-body">${message}</div>
+                <div class="macho-notify-progress"></div>
+            `;
+
+            notifyContainer.appendChild(notifyBox);
+
+            setTimeout(() => {
+                notifyBox.classList.add('notify-fade-out');
+            }, 3700);
+
+            setTimeout(() => {
+                notifyBox.remove();
+            }, 4000);
+        };
+
         window.addEventListener('keydown', function(e) {
-            // Tasta INSERT -> Închide/Deschide meniul pe ecran pe browser
             if (e.key === "Insert") {
                 bOpen = !bOpen;
                 window.setMenuState(bOpen);
@@ -286,7 +389,11 @@
             else if (e.key === "Enter") {
                 const activePanel = document.getElementById(`panel-${bTab}`);
                 const optionText = activePanel.querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
+                
                 console.log(`[TEST BROWSER] Executat: ${optionText}`);
+                
+                const categoriiNume = { 0: "SELF", 1: "WEAPONS", 2: "VISUALS" };
+                window.createMachoNotification(categoriiNume[bTab], `Funcția "${optionText}" a fost activată cu succes!`);
             }
         });
     </script>
