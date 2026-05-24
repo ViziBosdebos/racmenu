@@ -35,46 +35,46 @@
         }
 
         /* =========================================================================
-           INTERFAȚA DE CONFIGURARE TASTĂ (INSPIRATĂ DIN IMAGINE)
+           INTERFAȚA VIZUALĂ DE SETUP (AFIȘEAZĂ CE SCRII ÎN TASTATURA JOCULUI)
            ========================================================================= */
         .setup-keybind-wrapper {
             position: absolute;
-            top: 50px;
-            left: 50px;
-            width: 280px;
+            top: 40px;
+            left: 40px;
+            width: 300px;
             background: rgba(13, 14, 18, 0.98);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-bottom: 2px solid var(--tag-color);
-            border-radius: 8px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 30px rgba(var(--accent-color), 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             z-index: 10000;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity 0.25s ease, transform 0.25s ease;
         }
 
         .setup-keybind-wrapper.hidden {
             opacity: 0 !important;
-            transform: translateY(-15px) scale(0.95) !important;
+            transform: translateY(-20px) scale(0.95) !important;
             pointer-events: none !important;
         }
 
         .setup-header {
-            padding: 12px 16px;
-            background: rgba(20, 21, 26, 0.95);
+            padding: 14px 18px;
+            background: rgba(20, 21, 26, 0.97);
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .setup-header-indicator {
             width: 4px;
-            height: 12px;
+            height: 14px;
             background: var(--tag-color);
             border-radius: 2px;
-            box-shadow: 0 0 8px var(--tag-color);
+            box-shadow: 0 0 10px var(--tag-color);
         }
 
         .setup-title {
@@ -82,43 +82,37 @@
             font-weight: 700;
             color: #ffffff;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 1px;
         }
 
         .setup-body {
-            padding: 14px 16px;
+            padding: 16px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(13, 14, 18, 0.4);
+            background: rgba(13, 14, 18, 0.3);
         }
 
         .setup-label {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.7);
         }
 
-        .setup-input-box {
-            width: 70px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 5px;
-            padding: 6px 8px;
-            font-size: 12px;
+        /* Boxă de afișare modernă, alimentată direct prin scriptul LUA nativ */
+        .setup-display-box {
+            width: 90px;
+            background: rgba(var(--accent-color), 0.15);
+            border: 1px solid var(--tag-color);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 13px;
             font-weight: 700;
             color: #ffffff;
             text-align: center;
             text-transform: uppercase;
-            outline: none;
-            user-select: text !important;
-            transition: all 0.2s ease;
-        }
-
-        .setup-input-box:focus {
-            background: rgba(var(--accent-color), 0.1);
-            border-color: var(--tag-color);
-            box-shadow: 0 0 10px rgba(var(--accent-color), 0.3);
+            box-shadow: 0 0 15px rgba(var(--accent-color), 0.3);
+            letter-spacing: 0.5px;
         }
 
         /* =========================================================================
@@ -140,8 +134,7 @@
             transform: translateY(-20px) scale(0.96);
             pointer-events: none;
             transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), 
-                        transform 0.25s cubic-bezier(0.25, 1, 0.5, 1),
-                        box-shadow 0.3s ease;
+                        transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .menu-box.menu-visible {
@@ -177,7 +170,7 @@
             color: rgba(255, 255, 255, 0.3);
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: color 0.25s ease, background 0.25s ease;
+            transition: color 0.25s ease;
             position: relative;
         }
 
@@ -194,7 +187,7 @@
             width: 0;
             height: 2px;
             background-color: var(--tag-color);
-            transition: width 0.25s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease;
+            transition: width 0.25s ease;
             transform: translateX(-50%);
             box-shadow: 0 0 10px var(--tag-color);
         }
@@ -227,8 +220,7 @@
             justify-content: space-between;
             align-items: center;
             opacity: 0.35; 
-            transition: all 0.1s linear; 
-            position: relative;
+            transition: all 0.1s linear;
         }
 
         .menu-option.focused {
@@ -247,7 +239,6 @@
             color: rgba(255, 255, 255, 0.15);
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: color 0.3s ease;
         }
 
         .menu-option.focused .status-tag {
@@ -264,8 +255,7 @@
             gap: 10px;
             z-index: 99999;
             pointer-events: none;
-            width: 280px; 
-            background: transparent !important;
+            width: 280px;
         }
 
         .macho-notify {
@@ -273,30 +263,29 @@
             background: rgba(10, 10, 13, 0.94); 
             border-radius: 10px; 
             border: 1px solid rgb(var(--accent-color)); 
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 18px var(--accent-glow), inset 0 0 10px rgba(var(--accent-color), 0.15); 
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 18px var(--accent-glow); 
             padding: 12px 16px; 
             display: flex;
             flex-direction: column;
             gap: 4px;
-            pointer-events: auto;
             position: relative;
             overflow: hidden;
             animation: notifySlideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
         .macho-notify.notify-fade-out { animation: notifySlideOut 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        @keyframes notifySlideIn { from { opacity: 0; transform: translateX(40px) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }
-        @keyframes notifySlideOut { from { opacity: 1; transform: translateX(0) scale(1); filter: blur(3px); } to { opacity: 0; transform: translateX(60px) scale(0.95); } }
+        @keyframes notifySlideIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes notifySlideOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(60px); } }
 
         .macho-notify-header { display: flex; justify-content: space-between; align-items: center; }
-        .macho-notify-title { font-size: 10px; font-weight: 700; color: var(--tag-color); text-transform: uppercase; letter-spacing: 1.2px; filter: drop-shadow(0 0 5px rgba(var(--accent-color), 0.8)); }
+        .macho-notify-title { font-size: 10px; font-weight: 700; color: var(--tag-color); text-transform: uppercase; letter-spacing: 1.2px; }
         .macho-notify-time { font-size: 8px; font-weight: 500; color: rgba(255, 255, 255, 0.25); }
-        .macho-notify-body { font-size: 12px; font-weight: 400; color: rgba(255, 255, 255, 0.85); line-height: 1.4; }
+        .macho-notify-body { font-size: 12px; font-weight: 400; color: rgba(255, 255, 255, 0.85); }
         
         .macho-notify-progress {
             position: absolute; bottom: 0; left: 0; height: 2px;
             background: linear-gradient(90deg, rgb(var(--accent-color)), #ffffff);
-            box-shadow: 0 0 8px rgb(var(--accent-color)); width: 100%;
+            width: 100%;
             animation: notifyProgressTimer 4s linear forwards;
         }
         @keyframes notifyProgressTimer { from { width: 100%; } to { width: 0%; } }
@@ -314,7 +303,7 @@
         </div>
         <div class="setup-body">
             <span class="setup-label">Keybind</span>
-            <input type="text" id="macho-key-field" class="setup-input-box" placeholder="3" value="3" maxlength="8">
+            <div id="macho-key-display-box" class="setup-display-box">...</div>
         </div>
     </div>
 
@@ -369,11 +358,11 @@
         const categories = Array.from(document.querySelectorAll('.category-tab'));
         const menuBox = document.getElementById('macho-main-box');
         const setupPanel = document.getElementById('macho-setup-panel');
-        const keyInputField = document.getElementById('macho-key-field');
+        const keyDisplayBox = document.getElementById('macho-key-display-box');
         const notifyContainer = document.getElementById('notification-container');
         const bannerElement = document.getElementById('macho-banner-element');
 
-        let bOpen = false, bTab = 0, bOpt = 0, keybindSalvat = "";
+        let bOpen = false, bTab = 0, bOpt = 0;
         const bLimits = { 
             [0]: document.getElementById('panel-0').children.length - 1, 
             [1]: document.getElementById('panel-1').children.length - 1, 
@@ -381,30 +370,20 @@
             [3]: document.getElementById('panel-3').children.length - 1 
         };
 
-        // Ascundem inițial meniul principal, lăsăm doar fereastra de setup activă la încărcare
+        // Activăm panoul de setup la pornire
         setupPanel.classList.remove('hidden');
 
-        // Ascultă trimiterea tastei la apăsarea tastei Enter în interiorul inputului
-        keyInputField.addEventListener('keydown', function(e) {
-            if (e.key === "Enter") {
-                let val = keyInputField.value.trim().toUpperCase();
-                if (val !== "") {
-                    keybindSalvat = val;
-                    setupPanel.classList.add('hidden'); // Ascundem interfața mică
-                    keyInputField.blur();
-
-                    // Comunicăm cu scriptul LUA din joc
-                    if (typeof GetParentResourceName !== 'undefined') {
-                        fetch(`https://${GetParentResourceName()}/salveazaTastaSetup`, {
-                            method: 'POST',
-                            body: JSON.stringify({ tasta: val })
-                        }).catch(err => {});
-                    } else {
-                        window.createMachoNotification("SETUP", `Tasta salvată în browser: ${val}. Acum poți folosi tasta respectivă!`);
-                    }
-                }
+        // Funcție apelată din LUA pentru a trimite string-ul citit din tastatura jocului
+        window.seteazaTastaAfisata = function(textTasta) {
+            if(textTasta) {
+                keyDisplayBox.innerText = textTasta.toUpperCase();
             }
-        });
+        };
+
+        // Ascunde instantaneu panoul mic de setup de pe ecran
+        window.inchideSetupPanel = function() {
+            setupPanel.classList.add('hidden');
+        };
 
         window.updateSelection = function(tabIdx, optionIdx) {
             bTab = tabIdx; bOpt = optionIdx;
@@ -455,20 +434,25 @@
             setTimeout(() => { notifyBox.remove(); }, 4000);
         };
 
-        // Suport testare direct în browser normal
+        // Emulator pentru testare în browser local normal (în afara jocului)
         const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
         if (isNormalBrowser) {
             document.body.classList.add('is-browser-mode');
+            let tastaSimulata = "3";
+            window.seteazaTastaAfisata(tastaSimulata);
 
             window.addEventListener('keydown', function(e) {
-                // Dacă panoul de Setup este încă vizibil, nu lăsăm navigarea în meniu să funcționeze
                 if (!setupPanel.classList.contains('hidden')) {
+                    if (e.key === "Enter") {
+                        window.inchideSetupPanel();
+                    } else if (e.key.length === 1) {
+                        tastaSimulata = e.key.toUpperCase();
+                        window.seteazaTastaAfisata(tastaSimulata);
+                    }
                     return;
                 }
 
-                // Verificăm deschiderea meniului cu tasta aleasă din browser
-                let stringTastaApasata = e.key.toUpperCase();
-                if (stringTastaApasata === keybindSalvat || (e.key === "Insert" && keybindSalvat === "INSERT")) {
+                if (e.key.toUpperCase() === tastaSimulata || (e.key === "Insert" && tastaSimulata === "INSERT")) {
                     window.setMenuState(!bOpen);
                     return;
                 }
@@ -486,7 +470,7 @@
                         const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
                         window.changeMenuTheme(themeKeys[bOpt]);
                     }
-                    window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"VISUALS",3:"THEME"}[bTab], `Acțiunea "${optionText}" a fost activată!`);
+                    window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"VISUALS",3:"THEME"}[bTab], `Acțiunea "${optionText}" a pornit!`);
                 }
             });
         }
