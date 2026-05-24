@@ -24,6 +24,14 @@
             width: 100vw;
             overflow: hidden;
             padding: 30px;               
+            /* [ANIMATION] Intrare fluidă a întregului body */
+            animation: fadeInBody 0.6s ease-out;
+        }
+
+        /* [KEFRAMES] Animație intrare scenă */
+        @keyframes fadeInBody {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .menu-box {
@@ -31,10 +39,24 @@
             background: rgba(13, 14, 18, 0.96);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 14px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            /* [ELEGANCE] Shadow mai difuz și adânc */
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 
+                        0 0 50px rgba(78, 5, 160, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            
+            /* [ELEGANCE] Border glow subtil violet static */
+            position: relative;
+        }
+        
+        .menu-box::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 14px;
+            border: 1px solid rgba(114, 137, 218, 0.1);
+            pointer-events: none;
         }
 
         .menu-banner {
@@ -44,45 +66,88 @@
             background-size: cover;
             background-position: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            
+            /* [ANIMATION] Efect de 'depth' la încarcare */
+            animation: bannerDepth 1s ease-out;
+            transform-origin: top;
+        }
+        
+        @keyframes bannerDepth {
+            from { transform: scaleY(1.2) translateY(-10px); opacity: 0; }
+            to { transform: scaleY(1) translateY(0); opacity: 1; }
         }
 
         .categories-bar {
             display: flex;
-            background: rgba(20, 21, 26, 0.95);
+            background: rgba(20, 21, 26, 0.98);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 2px 0;
+            padding: 0; /* Curățat padding pentru aliniere perfectă indicator */
+            position: relative;
         }
 
         .category-tab {
             flex: 1;
             text-align: center;
-            padding: 12px 0;
+            padding: 14px 0;
             font-size: 11px;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.3);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            
+            /* [ANIMATION] Tranziție lină culori tab neselectat */
+            transition: color 0.3s ease, background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .category-tab.active {
-            color: #7289da;
-            background: rgba(78, 5, 160, 0.04);
-            box-shadow: inset 0 -2px 0 #7289da;
+            color: #ffffff; /* [ELEGANCE] Alb pur pe activ pentru contrast */
+            background: rgba(78, 5, 160, 0.06);
+            /* Box-shadow original dezactivat pentru indicatorul animat custom */
+            box-shadow: none; 
+        }
+        
+        /* [ANIMATION] Indicatorul animat de sub tab (Slide effect) */
+        .category-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: #7289da;
+            transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1), left 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px #7289da;
+        }
+        
+        .category-tab.active::after {
+            width: 80%; /* Lungimea indicatorului activ */
         }
 
         .menu-content {
-            padding: 20px;
+            padding: 25px 20px; /* [ELEGANCE] Puțin mai mult spațiu vertical */
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            max-height: 320px;
+            gap: 8px; /* [ELEGANCE] Gap puțin mai mare */
+            max-height: 340px; /* Ajustat subtil */
             overflow: hidden;
+            background: rgba(13, 14, 18, 0.5); /* Adâncime conținut */
         }
 
         .tab-panel {
             display: none;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
+            
+            /* [ANIMATION] Intrare fluidă panel la schimbare tab (Q/E) */
+            animation: panelSlideIn 0.4s ease-out;
+        }
+        
+        @keyframes panelSlideIn {
+            from { opacity: 0; transform: translateX(15px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .tab-panel.active {
@@ -91,37 +156,69 @@
 
         .menu-option {
             width: 100%;
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.015);
             border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 14px 18px;
+            border-radius: 10px; /* [ELEGANCE] Rotunjire mai modernă */
+            padding: 16px 20px; /* [ELEGANCE] Padding mai generos */
             font-size: 13px;
             font-weight: 500;
-            color: #ffffff;
+            color: rgba(255, 255, 255, 0.8);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            opacity: 0.35; 
-            transition: all 0.1s ease;
+            opacity: 0.3; /* [ELEGANCE] Mai stins când e inactiv */
+            
+            /* [ANIMATION] Tranziție ultra-fluidă pentru focused state */
+            transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+            
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Stilul aplicat opțiunii selectate din taste */
+        /* [ANIMATION] Shimmer effect discret pe fundal neselectat */
+        .menu-option::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent);
+            transition: left 0.5s;
+        }
+        .menu-option:hover::before {
+            left: 100%;
+        }
+
+        /* [ANIMATION & ELEGANCE] Stilul modern FOCUSED (Săgeți) */
         .menu-option.focused {
             opacity: 1; 
-            background: rgba(78, 5, 160, 0.12);
-            border-color: rgba(78, 5, 160, 0.4);
+            color: #ffffff;
+            background: rgba(78, 5, 160, 0.15);
+            border-color: rgba(114, 137, 218, 0.5); /* Border glow violet */
             font-weight: 600;
+            
+            /* [ELEGANCE] Efect de neon glow violet expandat */
+            box-shadow: 0 0 25px rgba(78, 5, 160, 0.3), 
+                        inset 0 0 10px rgba(114, 137, 218, 0.1);
+            
+            /* [ANIMATION] Mic 'pop' vizual la selectare */
+            transform: scale(1.015);
         }
 
         .menu-option .status-tag {
             font-size: 10px;
             font-weight: 700;
-            color: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.15);
             text-transform: uppercase;
+            letter-spacing: 1px;
+            
+            /* [ANIMATION] Tranziție tag */
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
         .menu-option.focused .status-tag {
-            color: #7289da;
+            color: #7289da; /* Neon albastru tag activ */
+            text-shadow: 0 0 8px rgba(114, 137, 218, 0.6);
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -158,7 +255,7 @@
     <script>
         const categories = Array.from(document.querySelectorAll('.category-tab'));
 
-        // Funcția globală apelată prin MachoExecuteDuiScript din Lua
+        // [LOGIC UNTOUCHED] Funcția globală apelată prin MachoExecuteDuiScript din Lua
         window.updateSelection = function(tabIdx, optionIdx) {
             // 1. Mută tab-ul activ (Q / E)
             categories.forEach((cat, idx) => {
