@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reason Menu Custom</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
 
         * {
             box-sizing: border-box;
@@ -24,14 +24,6 @@
             width: 100vw;
             overflow: hidden;
             padding: 30px;               
-            /* [ANIMATION] Intrare fluidă a întregului body la încărcare */
-            animation: fadeInBody 0.6s ease-out;
-        }
-
-        /* [KEFRAMES] Animație deschidere scenă */
-        @keyframes fadeInBody {
-            from { opacity: 0; transform: translateY(-15px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .menu-box {
@@ -39,23 +31,31 @@
             background: rgba(13, 14, 18, 0.96);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 14px;
-            /* [ANIMATION] Shadow mai difuz și adânc, cu un glow subtil */
+            /* Shadow adânc cu un glow subtil violet pe fundal */
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 
                         0 0 50px rgba(78, 5, 160, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            
-            /* [ANIMATION] Tranziție securizată pentru stările de show/hide */
-            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
+
+            --macho-glow: rgba(78, 5, 160, 0.3);
+
+            /* [ANIMATION] Animație modernă de deschidere direct pe element (fără clase secundare) */
+            animation: machoOpen 0.35s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            transform-origin: top left;
         }
-        
-        /* [ANIMATION] Clasa pentru starea ASCUNSĂ (Closed) */
-        .menu-box.closed {
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-            pointer-events: none;
+
+        /* [ANIMATION KEYFRAMES] Intrare fluidă: apare din transparență, vine ușor de sus și se mărește fin */
+        @keyframes machoOpen {
+            from {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .menu-banner {
@@ -66,21 +66,21 @@
             background-position: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             
-            /* [ANIMATION] Efect de 'depth reveal' la încarcare */
-            animation: bannerDepth 1s ease-out;
+            /* [ANIMATION] Efect elegant de adâncime pe banner la pornire */
+            animation: bannerReveal 0.6s ease-out;
             transform-origin: top;
         }
         
-        @keyframes bannerDepth {
-            from { transform: scaleY(1.3) translateY(-10px); opacity: 0; }
-            to { transform: scaleY(1) translateY(0); opacity: 1; }
+        @keyframes bannerReveal {
+            from { transform: scaleY(1.2); opacity: 0; }
+            to { transform: scaleY(1); opacity: 1; }
         }
 
         .categories-bar {
             display: flex;
             background: rgba(20, 21, 26, 0.98);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0; /* Curățat padding pentru indicator animat */
+            padding: 0;
             position: relative;
         }
 
@@ -93,20 +93,17 @@
             color: rgba(255, 255, 255, 0.3);
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            
-            /* [ANIMATION] Tranziție culori tab */
-            transition: color 0.3s ease, background-color 0.3s ease;
+            transition: color 0.25s ease, background-color 0.25s ease;
             position: relative;
         }
 
         .category-tab.active {
-            color: #ffffff; /* Contrast maxim activ */
+            color: #ffffff; 
             background: rgba(78, 5, 160, 0.06);
-            /* Box-shadow original dezactivat pentru indicator animat custom */
             box-shadow: none; 
         }
         
-        /* [ANIMATION] Indicatorul animat de sub tab (Slide effect) */
+        /* [ANIMATION] Indicator modern sub tab sub formă de linie glisantă */
         .category-tab::after {
             content: '';
             position: absolute;
@@ -115,36 +112,35 @@
             width: 0;
             height: 2px;
             background-color: #7289da;
-            transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1), left 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1);
             transform: translateX(-50%);
             box-shadow: 0 0 10px #7289da;
         }
         
         .category-tab.active::after {
-            width: 80%; /* Lungimea indicatorului activ */
+            width: 80%; 
         }
 
         .menu-content {
-            padding: 25px 20px; /* Spațiu vertical generos */
+            padding: 22px 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px; /* Gap constant */
+            gap: 8px;
             max-height: 340px; 
             overflow: hidden;
-            background: rgba(13, 14, 18, 0.5); /* Adâncime conținut */
+            background: rgba(13, 14, 18, 0.5);
         }
 
         .tab-panel {
             display: none;
             flex-direction: column;
             gap: 8px;
-            
-            /* [ANIMATION] Intrare fluidă panel la schimbare tab (Q/E) */
-            animation: panelSlideIn 0.4s ease-out;
+            /* [ANIMATION] Tranziție discretă la schimbarea categoriilor (Q/E) */
+            animation: panelFade 0.25s ease-out;
         }
         
-        @keyframes panelSlideIn {
-            from { opacity: 0; transform: translateX(15px); }
+        @keyframes panelFade {
+            from { opacity: 0; transform: translateX(8px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
@@ -156,7 +152,7 @@
             width: 100%;
             background: rgba(255, 255, 255, 0.015);
             border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 10px; /* Rotunjire modernă */
+            border-radius: 10px; 
             padding: 16px 20px;
             font-size: 13px;
             font-weight: 500;
@@ -164,27 +160,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            opacity: 0.3; /* Mai stins când e inactiv */
-            
-            /* [ANIMATION] Tranziție rapidă și fluidă pentru focused state */
-            transition: all 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
-            
+            opacity: 0.3; 
+            /* Tranziție rapidă de 0.15s ca tastele din Lua să răspundă instantaneu */
+            transition: all 0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
             position: relative;
         }
 
-        /* [ANIMATION & ELEGANCE] Stilul modern FOCUSED (Săgeți) */
+        /* [ANIMATION & ELEGANCE] Stilul modern FOCUSED când treci cu săgețile */
         .menu-option.focused {
             opacity: 1; 
             color: #ffffff;
             background: rgba(78, 5, 160, 0.15);
-            border-color: rgba(114, 137, 218, 0.5); /* Border glow violet */
+            border-color: rgba(114, 137, 218, 0.5); 
             font-weight: 600;
-            
-            /* Efect de neon glow violet expandat */
-            box-shadow: 0 0 25px rgba(78, 5, 160, 0.3), 
+            box-shadow: 0 0 25px var(--macho-glow), 
                         inset 0 0 10px rgba(114, 137, 218, 0.1);
-            
-            /* Mic 'pop' vizual securizat la selectare */
             transform: scale(1.015);
         }
 
@@ -194,20 +184,18 @@
             color: rgba(255, 255, 255, 0.15);
             text-transform: uppercase;
             letter-spacing: 1px;
-            
-            /* [ANIMATION] Tranziție tag */
-            transition: color 0.3s ease;
+            transition: color 0.2s ease;
         }
 
         .menu-option.focused .status-tag {
-            color: #7289da; /* Neon albastru tag activ */
+            color: #7289da; 
             text-shadow: 0 0 8px rgba(114, 137, 218, 0.6);
         }
     </style>
 </head>
 <body>
 
-    <div id="macho-menu" class="menu-box closed">
+    <div class="menu-box">
         <div class="menu-banner"></div>
 
         <div class="categories-bar">
@@ -237,18 +225,8 @@
 
     <script>
         const categories = Array.from(document.querySelectorAll('.category-tab'));
-        const menuBox = document.getElementById('macho-menu');
 
-        // [ANIMATION LOGIC] Funcții pentru controlul deschiderii/închiderii
-        window.MachoShowMenu = function() {
-            menuBox.classList.remove('closed');
-        };
-
-        window.MachoHideMenu = function() {
-            menuBox.classList.add('closed');
-        };
-
-        // [LOGIC UNTOUCHED] Funcția globală apelată prin MachoExecuteDuiScript din Lua
+        // Logica ta originală de JS neatinsă, exact așa cum ai trimis-o!
         window.updateSelection = function(tabIdx, optionIdx) {
             // 1. Mută tab-ul activ (Q / E)
             categories.forEach((cat, idx) => {
