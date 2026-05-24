@@ -15,8 +15,10 @@
             user-select: none;
         }
 
-        body {
-            background-color: transparent !important; 
+        /* FIX ANTIBLACK: Forțăm transparența totală pe tot ecranul jocului */
+        html, body {
+            background: transparent !important;
+            background-color: rgba(0, 0, 0, 0) !important;
             display: flex;
             justify-content: flex-start; 
             align-items: flex-start;     
@@ -162,7 +164,7 @@
         }
 
         /* =========================================================================
-           [TUNNING: CUSTOM COLOR 78, 5, 160 FOR NOTIFICATIONS]
+           [NOTIFICATIONS CONTAINER - COMPLET TRANSPARENT]
            ========================================================================= */
         #notification-container {
             position: fixed;
@@ -174,19 +176,20 @@
             z-index: 99999;
             pointer-events: none;
             width: 280px; 
+            background: transparent !important; /* FIX */
         }
 
         .macho-notify {
             width: 100%;
-            background: rgba(10, 10, 13, 0.94); 
+            /* Fundal solid dar cu opacity scăzut pentru cutie, ca să nu devină neagră în joc */
+            background: rgba(13, 14, 18, 0.95) !important;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 10px; 
             
-            --notify-color: rgb(78, 5, 160); /* Salvăm culoarea cerută ca variabilă */
+            --notify-color: rgb(78, 5, 160);
             
-            /* MODIFICARE: Culoarea exactă cerută de tine pentru margine și glow */
-            border: 1px solid var(--notify-color); 
+            border: 1px solid var(--notify-color) !important; 
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 
                         0 0 18px rgba(78, 5, 160, 0.45), 
                         inset 0 0 10px rgba(78, 5, 160, 0.15); 
@@ -221,23 +224,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: transparent !important;
         }
 
-        /* Titlul asortat cu noul violet primit de la tine */
         .macho-notify-title {
             font-size: 10px; 
             font-weight: 700;
-            color: #8a1be6; /* Nuanță deschisă asortată pentru text clar */
+            color: #8a1be6; 
             text-transform: uppercase;
             letter-spacing: 1.2px;
             filter: drop-shadow(0 0 5px rgba(78, 5, 160, 0.8));
+            background: transparent !important;
         }
 
         .macho-notify-time {
             font-size: 8px; 
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.2.5);
+            color: rgba(255, 255, 255, 0.25);
             letter-spacing: 0.5px;
+            background: transparent !important;
         }
 
         .macho-notify-body {
@@ -245,9 +250,9 @@
             font-weight: 400;
             color: rgba(255, 255, 255, 0.85);
             line-height: 1.4;
+            background: transparent !important;
         }
 
-        /* Bara de progres folosește acum culoarea ta pentru bază */
         .macho-notify-progress {
             position: absolute;
             bottom: 0;
