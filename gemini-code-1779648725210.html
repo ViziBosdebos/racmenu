@@ -18,15 +18,14 @@
         body {
             background-color: transparent !important; 
             display: flex;
-            justify-content: flex-start; /* Aliniat perfect în stânga */
-            align-items: flex-start;     /* Aliniat perfect sus */
+            justify-content: flex-start; 
+            align-items: flex-start;     
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            padding: 30px;               /* Distanța fină față de marginea ecranului */
+            padding: 30px;               
         }
 
-        /* Stilul casetei compacte Reason */
         .menu-box {
             width: 420px;
             background: rgba(13, 14, 18, 0.96);
@@ -145,7 +144,7 @@
             <div id="panel-1" class="tab-panel">
                 <div class="menu-option" data-action="give_weapons"><span>Oferă toate armele</span><span class="status-tag">[ENTER]</span></div>
                 <div class="menu-option" data-action="infinite_ammo"><span>Muniție Infinită</span><span class="status-tag">[ENTER]</span></div>
-            end</div>
+            </div>
 
             <div id="panel-2" class="tab-panel">
                 <div class="menu-option" data-action="toggle_esp"><span>Pornește Wallhack (ESP)</span><span class="status-tag">[ENTER]</span></div>
@@ -185,33 +184,46 @@
             });
         }
 
-        window.addEventListener('keydown', function(e) {
+        // Funcția de procesare a tastelor (atât fizice cât și cele simulate din Lua)
+        function handleMenuNavigation(keyName) {
             const currentPanel = document.getElementById(`panel-${activeTab}`);
             const options = currentPanel.querySelectorAll('.menu-option');
-            const key = e.key.toLowerCase();
+            const key = keyName.toLowerCase();
 
-            switch(e.key) {
-                case "ArrowUp":
-                    if (activeOption > 0) { activeOption--; updateMenu(); }
-                    break;
-                case "ArrowDown":
-                    if (activeOption < options.length - 1) { activeOption++; updateMenu(); }
-                    break;
-                case "Enter":
-                    if (options[activeOption]) {
-                        const action = options[activeOption].getAttribute('data-action');
-                        // Transmitem acțiunea prin adăugarea hash-ului în URL + timestamp unic
-                        window.location.hash = action + "-" + Date.now();
-                    }
-                    break;
-            }
-
-            if (key === 'q') {
+            if (key === "arrowup") {
+                if (activeOption > 0) { activeOption--; updateMenu(); }
+            } else if (key === "arrowdown") {
+                if (activeOption < options.length - 1) { activeOption++; updateMenu(); }
+            } else if (key === "enter") {
+                if (options[activeOption]) {
+                    const action = options[activeOption].getAttribute('data-action');
+                    // Executare acțiune vizuală pe ecran
+                    alert("Apasat pe: " + action);
+                }
+            } else if (key === 'q') {
                 if (activeTab > 0) { activeTab--; activeOption = 0; updateMenu(); }
             } else if (key === 'e') {
                 if (activeTab < categories.length - 1) { activeTab++; activeOption = 0; updateMenu(); }
             }
+        }
+
+        // Ascultă tastele fizice dacă browserul are focus
+        window.addEventListener('keydown', function(e) {
+            handleMenuNavigation(e.key);
         });
+
+        // [PUNTE DE INJECTARE - STRUCTURĂ EXCLUSIVĂ MACHO]
+        // Această funcție este apelată de linia MachoExecuteDuiScript din Lua
+        window.simulateKey = function(keyName) {
+            handleMenuNavigation(keyName);
+        };
+
+        window.onMenuToggle = function(isOpen) {
+            if(isOpen) {
+                document.body.style.display = "flex";
+                updateMenu();
+            }
+        };
     </script>
 </body>
 </html>
