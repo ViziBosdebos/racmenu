@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="ro)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -119,7 +119,7 @@
         .category-tab.active::after { width: 80%; }
 
         .menu-content {
-            padding: 22px 20px;
+            padding: 22px 20px 15px 20px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -172,6 +172,72 @@
             text-shadow: 0 0 8px var(--tag-color);
         }
 
+        /* ==========================================
+           SECTIUNE MODERNA INTRARE TEXT (SETTINGS)
+           ========================================== */
+        .menu-settings-box {
+            background: rgba(18, 19, 24, 0.98);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .settings-label-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .settings-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .settings-desc {
+            font-size: 9px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .settings-input-wrapper {
+            position: relative;
+            width: 140px;
+        }
+
+        .modern-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            text-align: center;
+            text-transform: uppercase;
+            outline: none;
+            user-select: text !important; /* Permite interactiunea */
+            transition: all 0.25s ease;
+        }
+
+        .modern-input:focus {
+            background: rgba(var(--accent-color), 0.1);
+            border-color: var(--tag-color);
+            box-shadow: 0 0 15px rgba(var(--accent-color), 0.4);
+        }
+
+        .modern-input::placeholder {
+            color: rgba(255, 255, 255, 0.15);
+            text-transform: none;
+        }
+
+        /* Restul stilurilor pentru notificari */
         #notification-container {
             position: fixed;
             top: 30px;
@@ -190,10 +256,7 @@
             background: rgba(10, 10, 13, 0.94); 
             border-radius: 10px; 
             border: 1px solid rgb(var(--accent-color)); 
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 
-                        0 0 18px var(--accent-glow), 
-                        inset 0 0 10px rgba(var(--accent-color), 0.15); 
-                        
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 18px var(--accent-glow), inset 0 0 10px rgba(var(--accent-color), 0.15); 
             padding: 12px 16px; 
             display: flex;
             flex-direction: column;
@@ -201,73 +264,26 @@
             pointer-events: auto;
             position: relative;
             overflow: hidden;
-
             animation: notifySlideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            transition: all 0.3s ease;
         }
 
-        .macho-notify.notify-fade-out {
-            animation: notifySlideOut 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
+        .macho-notify.notify-fade-out { animation: notifySlideOut 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes notifySlideIn { from { opacity: 0; transform: translateX(40px) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }
+        @keyframes notifySlideOut { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(60px) scale(0.95); } }
 
-        @keyframes notifySlideIn {
-            from { opacity: 0; transform: translateX(40px) scale(0.95); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
-        }
-
-        @keyframes notifySlideOut {
-            from { opacity: 1; transform: translateX(0) scale(1); }
-            to { opacity: 0; transform: translateX(60px) scale(0.95); }
-        }
-
-        .macho-notify-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .macho-notify-title {
-            font-size: 10px; 
-            font-weight: 700;
-            color: var(--tag-color); 
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            filter: drop-shadow(0 0 5px rgba(var(--accent-color), 0.8));
-        }
-
-        .macho-notify-time {
-            font-size: 8px; 
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.25);
-            letter-spacing: 0.5px;
-        }
-
-        .macho-notify-body {
-            font-size: 12px; 
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.85);
-            line-height: 1.4;
-        }
-
+        .macho-notify-header { display: flex; justify-content: space-between; align-items: center; }
+        .macho-notify-title { font-size: 10px; font-weight: 700; color: var(--tag-color); text-transform: uppercase; letter-spacing: 1.2px; filter: drop-shadow(0 0 5px rgba(var(--accent-color), 0.8)); }
+        .macho-notify-time { font-size: 8px; font-weight: 500; color: rgba(255, 255, 255, 0.25); }
+        .macho-notify-body { font-size: 12px; font-weight: 400; color: rgba(255, 255, 255, 0.85); line-height: 1.4; }
+        
         .macho-notify-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 2px;
+            position: absolute; bottom: 0; left: 0; height: 2px;
             background: linear-gradient(90deg, rgb(var(--accent-color)), #ffffff);
-            box-shadow: 0 0 8px rgb(var(--accent-color));
-            width: 100%;
+            box-shadow: 0 0 8px rgb(var(--accent-color)); width: 100%;
             animation: notifyProgressTimer 4s linear forwards;
         }
-
-        @keyframes notifyProgressTimer {
-            from { width: 100%; }
-            to { width: 0%; }
-        }
-        
-        body.is-browser-mode {
-            background-color: #1a1b20 !important;
-        }
+        @keyframes notifyProgressTimer { from { width: 100%; } to { width: 0%; } }
+        body.is-browser-mode { background-color: #1a1b20 !important; }
     </style>
 </head>
 <body>
@@ -310,64 +326,35 @@
                 <div class="menu-option"><span>Tema Blood (Roșu Închis)</span><span class="status-tag">[SELECT]</span></div>
             </div>
         </div>
+
+        <div class="menu-settings-box">
+            <div class="settings-label-group">
+                <span class="settings-title">Tastă Activare</span>
+                <span class="settings-desc">Scrie tasta (ex: 3, F5, Insert)</span>
+            </div>
+            <div class="settings-input-wrapper">
+                <input type="text" id="macho-keybind-input" class="modern-input" placeholder="Insert" value="Insert" maxlength="10">
+            </div>
+        </div>
     </div>
 
     <script>
-        // ==========================================
-        //  BAZA DE DATE CU TEMATICI (ADAUCI AICI UȘOR)
-        // ==========================================
         const themes = {
-            default: {
-                banner: "https://i.ytimg.com/vi/GokDEuoHwoo/sddefault.jpg",
-                colorRGB: "78, 5, 160",
-                glow: "rgba(78, 5, 160, 0.45)",
-                border: "rgba(114, 137, 218, 0.5)",
-                tagHex: "#7289da"
-            },
-            orange: {
-                banner: "https://i.makeagif.com/media/2-15-2026/sQDkbC.gif",
-                colorRGB: "255, 102, 0",
-                glow: "rgba(255, 102, 0, 0.55)",
-                border: "rgba(255, 136, 0, 0.6)",
-                tagHex: "#ff7700"
-            },
-                Nicu: {
-                banner: "https://media1.tenor.com/m/Q3qR25JJTQkAAAAC/nicusor-dan.gif",
-                colorRGB: "0, 0, 255",
-                glow: "rgba(0, 0, 255, 0.5)",
-                border: "rgba(0, 0, 255, 0.6)",
-                tagHex: "#02259c"
-            },
-            matrix: {
-                banner: "https://i.gifer.com/C7S7.gif", // GIF Matrix de test
-                colorRGB: "0, 255, 70",
-                glow: "rgba(0, 255, 70, 0.5)",
-                border: "rgba(0, 255, 70, 0.6)",
-                tagHex: "#00ff46"
-            },
-                Carlito: {
-                banner: "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWpjNHNoaGo2aHZlbjhuZm1xbmluYWp5cTg3aGk3YWd6eGQ3Y2NjaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lLmKXvVatdE2y7JTge/giphy.gif",
-                colorRGB: "200, 0, 0",
-                glow: "rgba(200, 0, 0, 0.55)",
-                border: "rgba(255, 0, 0, 0.4)",
-                tagHex: "#ff1a1a"
-            },
-            blood: {
-                banner: "https://i.gifer.com/76Yp.gif", // GIF Rosu de test
-                colorRGB: "200, 0, 0",
-                glow: "rgba(200, 0, 0, 0.55)",
-                border: "rgba(255, 0, 0, 0.4)",
-                tagHex: "#ff1a1a"
-            }
+            default: { banner: "https://i.ytimg.com/vi/GokDEuoHwoo/sddefault.jpg", colorRGB: "78, 5, 160", glow: "rgba(78, 5, 160, 0.45)", border: "rgba(114, 137, 218, 0.5)", tagHex: "#7289da" },
+            orange: { banner: "https://i.makeagif.com/media/2-15-2026/sQDkbC.gif", colorRGB: "255, 102, 0", glow: "rgba(255, 102, 0, 0.55)", border: "rgba(255, 136, 0, 0.6)", tagHex: "#ff7700" },
+            Nicu: { banner: "https://media1.tenor.com/m/Q3qR25JJTQkAAAAC/nicusor-dan.gif", colorRGB: "0, 0, 255", glow: "rgba(0, 0, 255, 0.5)", border: "rgba(0, 0, 255, 0.6)", tagHex: "#02259c" },
+            matrix: { banner: "https://i.gifer.com/C7S7.gif", colorRGB: "0, 255, 70", glow: "rgba(0, 255, 70, 0.5)", border: "rgba(0, 255, 70, 0.6)", tagHex: "#00ff46" },
+            Carlito: { banner: "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWpjNHNoaGo2aHZlbjhuZm1xbmluYWp5cTg3aGk3YWd6eGQ3Y2NjaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lLmKXvVatdE2y7JTge/giphy.gif", colorRGB: "200, 0, 0", glow: "rgba(200, 0, 0, 0.55)", border: "rgba(255, 0, 0, 0.4)", tagHex: "#ff1a1a" },
+            blood: { banner: "https://i.gifer.com/76Yp.gif", colorRGB: "200, 0, 0", glow: "rgba(200, 0, 0, 0.55)", border: "rgba(255, 0, 0, 0.4)", tagHex: "#ff1a1a" }
         };
 
         const categories = Array.from(document.querySelectorAll('.category-tab'));
         const menuBox = document.getElementById('macho-main-box');
         const notifyContainer = document.getElementById('notification-container');
         const bannerElement = document.getElementById('macho-banner-element');
+        const keybindInput = document.getElementById('macho-keybind-input');
 
         let bOpen = true, bTab = 0, bOpt = 0;
-        // Ajustăm limitele de opțiuni automat la pornire în funcție de câte rânduri pui în HTML
         const bLimits = { 
             [0]: document.getElementById('panel-0').children.length - 1, 
             [1]: document.getElementById('panel-1').children.length - 1, 
@@ -375,9 +362,25 @@
             [3]: document.getElementById('panel-3').children.length - 1 
         };
 
+        // Eveniment cand utilizatorul schimba tasta in casuta de text
+        keybindInput.addEventListener('input', function(e) {
+            let tastaScrisa = e.target.value.trim();
+            if(tastaScrisa === "") return;
+            
+            // Trimitem noua tasta direct catre scriptul de LUA (Rulam evenimentul prin NUI callback fictiv / print debug)
+            console.log(`[KEYBIND] Tasta noua detectata: ${tastaScrisa}`);
+            
+            // Daca suntem in interiorul jocului (CitizenFX), apelam o functie trimisa din LUA
+            if (typeof GetParentResourceName !== 'undefined') {
+                fetch(`https://${GetParentResourceName()}/schimbaTastaMeniu`, {
+                    method: 'POST',
+                    body: JSON.stringify({ tasta: tastaScrisa })
+                }).catch(err => {});
+            }
+        });
+
         window.updateSelection = function(tabIdx, optionIdx) {
             bTab = tabIdx; bOpt = optionIdx;
-
             categories.forEach((cat, idx) => {
                 if (idx === tabIdx) {
                     cat.classList.add('active');
@@ -387,33 +390,26 @@
                     document.getElementById(`panel-${idx}`).classList.remove('active');
                 }
             });
-
             const currentPanel = document.getElementById(`panel-${tabIdx}`);
             const options = Array.from(currentPanel.querySelectorAll('.menu-option'));
-
             options.forEach((opt, idx) => {
-                if (idx === optionIdx) {
-                    opt.classList.add('focused');
-                } else {
-                    opt.classList.remove('focused');
-                }
+                if (idx === optionIdx) opt.classList.add('focused');
+                else opt.classList.remove('focused');
             });
         };
 
         window.setMenuState = function(visible) {
             bOpen = visible;
-            if (visible) {
-                menuBox.classList.remove('menu-hidden');
-            } else {
+            if (visible) menuBox.classList.remove('menu-hidden');
+            else {
                 menuBox.classList.add('menu-hidden');
+                keybindInput.blur(); // Scoatem focusul de pe scris cand se inchide
             }
         };
 
-        // Funcția de tematică dinamică - Aplică automat datele din tabelul de sus
         window.changeMenuTheme = function(themeName) {
             const selectedTheme = themes[themeName];
             if (!selectedTheme) return;
-
             bannerElement.style.backgroundImage = `url('${selectedTheme.banner}')`;
             document.documentElement.style.setProperty('--accent-color', selectedTheme.colorRGB);
             document.documentElement.style.setProperty('--accent-glow', selectedTheme.glow);
@@ -424,60 +420,44 @@
         window.createMachoNotification = function(title, message) {
             const notifyBox = document.createElement('div');
             notifyBox.className = 'macho-notify';
-
             const acum = new Date();
             const timpText = `${acum.getHours().toString().padStart(2, '0')}:${acum.getMinutes().toString().padStart(2, '0')}`;
-
-            notifyBox.innerHTML = `
-                <div class="macho-notify-header">
-                    <span class="macho-notify-title">${title}</span>
-                    <span class="macho-notify-time">${timpText}</span>
-                </div>
-                <div class="macho-notify-body">${message}</div>
-                <div class="macho-notify-progress"></div>
-            `;
-
+            notifyBox.innerHTML = `<div class="macho-notify-header"><span class="macho-notify-title">${title}</span><span class="macho-notify-time">${timpText}</span></div><div class="macho-notify-body">${message}</div><div class="macho-notify-progress"></div>`;
             notifyContainer.appendChild(notifyBox);
-
             setTimeout(() => { notifyBox.classList.add('notify-fade-out'); }, 3700);
             setTimeout(() => { notifyBox.remove(); }, 4000);
         };
 
         const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
-
         if (isNormalBrowser) {
             document.body.classList.add('is-browser-mode');
             window.setMenuState(true);
 
             window.addEventListener('keydown', function(e) {
+                // Prevenim navigarea prin meniu in timp ce scriem in casuta de text!
+                if (document.activeElement === keybindInput) {
+                    if (e.key === "Enter") {
+                        keybindInput.blur();
+                        window.createMachoNotification("SETĂRI", `Tasta a fost salvata: ${keybindInput.value}`);
+                    }
+                    return; 
+                }
+
                 if (e.key === "Insert") { window.setMenuState(!bOpen); return; }
                 if (!bOpen) return;
 
-                if (e.key === "q" || e.key === "Q") {
-                    if (bTab > 0) { bTab--; bOpt = 0; window.updateSelection(bTab, bOpt); }
-                }
-                else if (e.key === "e" || e.key === "E") {
-                    if (bTab < 3) { bTab++; bOpt = 0; window.updateSelection(bTab, bOpt); }
-                }
-                else if (e.key === "ArrowUp") {
-                    if (bOpt > 0) { bOpt--; window.updateSelection(bTab, bOpt); }
-                }
-                else if (e.key === "ArrowDown") {
-                    if (bOpt < bLimits[bTab]) { bOpt++; window.updateSelection(bTab, bOpt); }
-                }
+                if (e.key === "q" || e.key === "Q") { if (bTab > 0) { bTab--; bOpt = 0; window.updateSelection(bTab, bOpt); } }
+                else if (e.key === "e" || e.key === "E") { if (bTab < 3) { bTab++; bOpt = 0; window.updateSelection(bTab, bOpt); } }
+                else if (e.key === "ArrowUp") { if (bOpt > 0) { bOpt--; window.updateSelection(bTab, bOpt); } }
+                else if (e.key === "ArrowDown") { if (bOpt < bLimits[bTab]) { bOpt++; window.updateSelection(bTab, bOpt); } }
                 else if (e.key === "Enter") {
                     const activePanel = document.getElementById(`panel-${bTab}`);
                     const optionText = activePanel.querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
-                    
-                    console.log(`[BROWSER TEST] Executat: ${optionText}`);
-                    
                     if (bTab === 3) {
                         const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
                         window.changeMenuTheme(themeKeys[bOpt]);
                     }
-                    
-                    const categoriiNume = { 0: "SELF", 1: "WEAPONS", 2: "VISUALS", 3: "THEME" };
-                    window.createMachoNotification(categoriiNume[bTab], `Acțiunea "${optionText}" a rulat în test browser!`);
+                    window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"VISUALS",3:"THEME"}[bTab], `Acțiunea "${optionText}" a rulat!`);
                 }
             });
         }
