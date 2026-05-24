@@ -16,189 +16,220 @@
         }
 
         body {
-            background-color: transparent; /* Transparent ca să se vadă jocul în spate */
+            background-color: transparent !important; 
             display: flex;
-            justify-content: flex-start; /* Aliniere la stânga */
-            align-items: flex-start;     /* Aliniere sus */
+            justify-content: flex-start; 
+            align-items: flex-start;     
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
-            padding: 20px;               /* Distanța față de marginile ecranului (stânga-sus) */
+            padding: 30px;               
         }
 
-        /* Caseta Principală a Meniului - Stilul Compact din Imagine */
         .menu-box {
             width: 420px;
-            background: rgba(13, 14, 18, 0.92);
+            background: rgba(13, 14, 18, 0.96);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 14px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 
-                        0 0 40px rgba(78, 5, 160, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(78, 5, 160, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
+
+            /* FIX: Meniul pornește vizibil nativ ca să nu mai rămână blocat pe ecran */
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            
+            /* [ANIMATION] Animație automată de drop-down și fade-in la încărcare */
+            animation: machoOpenAnimation 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            
+            /* Tranziție rapidă dedicată exclusiv pentru închiderea/deschiderea din Lua */
+            transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Bannerul de sus cu link-ul tău */
+        /* [ANIMATION KEYFRAMES] Efectul de deschidere automat la pornire */
+        @keyframes machoOpenAnimation {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Clasa aplicată din Lua/Browser când vrei să ascunzi meniul cu animație */
+        .menu-box.menu-hidden {
+            opacity: 0 !important;
+            transform: translateY(20px) scale(0.96) !important;
+            pointer-events: none !important;
+        }
+
         .menu-banner {
             width: 100%;
             height: 110px;
-            background-image: url('https://i.ytimg.com/vi/GokDEuoHwoo/sddefault.jpg'); /* Link-ul tău de banner */
+            background-image: url('https://i.ytimg.com/vi/GokDEuoHwoo/sddefault.jpg'); 
             background-size: cover;
             background-position: center;
-            position: relative;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        /* Bara de Categorii (Sub Banner) */
         .categories-bar {
             display: flex;
-            background: rgba(20, 21, 26, 0.95);
+            background: rgba(20, 21, 26, 0.98);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 2px 0;
+            padding: 0;
+            position: relative;
         }
 
         .category-tab {
             flex: 1;
             text-align: center;
-            padding: 12px 0;
+            padding: 14px 0;
             font-size: 11px;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.3);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
+            letter-spacing: 1.5px;
+            transition: color 0.25s ease;
+            position: relative;
         }
 
-        /* Categoria activă selectată cu Q / E */
         .category-tab.active {
-            color: #7289da;
-            background: rgba(78, 5, 160, 0.04);
-            box-shadow: inset 0 -2px 0 #7289da;
+            color: #ffffff; 
+            background: rgba(78, 5, 160, 0.06);
+            box-shadow: none; 
+        }
+        
+        /* Linie neon sub tabul activ */
+        .category-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: #7289da;
+            transition: width 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px #7289da;
+        }
+        
+        .category-tab.active::after {
+            width: 80%; 
         }
 
-        /* Zona listei de opțiuni (Submeniul) */
         .menu-content {
-            padding: 20px;
+            padding: 22px 20px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            max-height: 320px;
+            gap: 8px;
+            max-height: 340px; 
             overflow: hidden;
+            background: rgba(13, 14, 18, 0.5);
         }
 
         .tab-panel {
             display: none;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
         .tab-panel.active {
             display: flex;
         }
 
-        /* Opțiunile/Butoanele din listă */
         .menu-option {
             width: 100%;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 14px 18px;
+            border-radius: 10px; 
+            padding: 16px 20px;
             font-size: 13px;
             font-weight: 500;
-            color: #ffffff;
+            color: rgba(255, 255, 255, 0.8);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s ease;
-            opacity: 0.35; /* Opacitate redusă pentru elementele neselectate */
+            opacity: 0.35; 
+            transition: all 0.1s linear; 
+            position: relative;
         }
 
-        /* Elementul selectat curent din tastatură (Sus/Jos) */
+        /* Stilul modern cu glow violet la selectare */
         .menu-option.focused {
-            opacity: 1; /* Devine complet vizibil */
-            background: rgba(78, 5, 160, 0.12);
-            border-color: rgba(78, 5, 160, 0.4);
-            box-shadow: 0 0 15px rgba(78, 5, 160, 0.1);
-            transform: scale(1.01);
+            opacity: 1; 
+            color: #ffffff;
+            background: rgba(78, 5, 160, 0.15);
+            border-color: rgba(114, 137, 218, 0.5); 
             font-weight: 600;
+            box-shadow: 0 0 25px rgba(78, 5, 160, 0.3);
+            transform: scale(1.015);
         }
 
-        /* Indicatorul din dreapta pentru butonul curent */
         .menu-option .status-tag {
             font-size: 10px;
             font-weight: 700;
-            color: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.15);
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .menu-option.focused .status-tag {
-            color: #7289da;
+            color: #7289da; 
+            text-shadow: 0 0 8px rgba(114, 137, 218, 0.6);
         }
     </style>
 </head>
 <body>
 
-    <div class="menu-box">
-        
+    <div id="macho-main-box" class="menu-box">
         <div class="menu-banner"></div>
 
         <div class="categories-bar">
-            <div class="category-tab active" data-index="0">Self [Q]</div>
-            <div class="category-tab" data-index="1">Weapons</div>
-            <div class="category-tab" data-index="2">Visuals [E]</div>
+            <div class="category-tab active">Self</div>
+            <div class="category-tab">Weapons</div>
+            <div class="category-tab">Visuals</div>
         </div>
 
         <div class="menu-content">
-            
             <div id="panel-0" class="tab-panel active">
-                <div class="menu-option focused" data-action="godmode">
-                    <span>Activare Godmode</span>
-                    <span class="status-tag">[ENTER]</span>
-                </div>
-                <div class="menu-option" data-action="heal">
-                    <span>Reface Viață & Armură</span>
-                    <span class="status-tag">[ENTER]</span>
-                </div>
-                <div class="menu-option" data-action="tp_waypoint">
-                    <span>Teleport la Waypoint</span>
-                    <span class="status-tag">[ENTER]</span>
-                </div>
+                <div class="menu-option focused"><span>Activare Godmode</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Reface Viață & Armură</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Teleport la Waypoint</span><span class="status-tag">[ENTER]</span></div>
             </div>
 
             <div id="panel-1" class="tab-panel">
-                <div class="menu-option" data-action="give_weapons">
-                    <span>Oferă toate armele</span>
-                    <span class="status-tag">[ENTER]</span>
-                </div>
-                <div class="menu-option" data-action="infinite_ammo">
-                    <span>Muniție Infinită</span>
-                    <span class="status-tag">[ENTER]</span>
-                </div>
+                <div class="menu-option"><span>Oferă toate armele</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Muniție Infinită</span><span class="status-tag">[ENTER]</span></div>
             </div>
 
             <div id="panel-2" class="tab-panel">
-                <div class="menu-option" data-action="toggle_esp">
-                    <span>Pornește Wallhack (ESP)</span>
-                    <span class="status-tag">[ENTER]</span>
-                </div>
-                <div class="menu-option" data-action="clean_screenshot">
-                    <span>Bypass Screenshot</span>
-                    <span class="status-tag">[ENTER]</span>
-                </div>
+                <div class="menu-option"><span>Pornește Wallhack (ESP)</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Bypass Screenshot</span><span class="status-tag">[ENTER]</span></div>
             </div>
-
         </div>
     </div>
 
     <script>
         const categories = Array.from(document.querySelectorAll('.category-tab'));
-        let activeTab = 0;
-        let activeOption = 0;
+        const menuBox = document.getElementById('macho-main-box');
 
-        function updateMenu() {
-            // 1. Schimbă tab-ul activ de sus
+        // Variabile interne folosite doar când testezi în Google Chrome
+        let bOpen = true, bTab = 0, bOpt = 0;
+        const bLimits = { [0]: 2, [1]: 1, [2]: 1 };
+
+        // [LOGIC UNTOUCHED] Funcția apelată din Lua prin MachoExecuteDuiScript
+        window.updateSelection = function(tabIdx, optionIdx) {
+            bTab = tabIdx; bOpt = optionIdx;
+
+            // 1. Mută tab-ul activ (Q / E)
             categories.forEach((cat, idx) => {
-                if (idx === activeTab) {
+                if (idx === tabIdx) {
                     cat.classList.add('active');
                     document.getElementById(`panel-${idx}`).classList.add('active');
                 } else {
@@ -207,80 +238,57 @@
                 }
             });
 
-            // 2. Gestionare focus pe elementele din interiorul listei curente
-            const currentPanel = document.getElementById(`panel-${activeTab}`);
+            // 2. Mută opțiunea focalizată (Săgeată Sus / Jos)
+            const currentPanel = document.getElementById(`panel-${tabIdx}`);
             const options = Array.from(currentPanel.querySelectorAll('.menu-option'));
 
-            // Ne asigurăm că indexul nu iese din listă în caz că o categorie are mai puține butoane
-            if (activeOption >= options.length) activeOption = options.length - 1;
-            if (activeOption < 0) activeOption = 0;
-
             options.forEach((opt, idx) => {
-                if (idx === activeOption) {
+                if (idx === optionIdx) {
                     opt.classList.add('focused');
                 } else {
                     opt.classList.remove('focused');
                 }
             });
-        }
+        };
 
-        // Ascultare evenimente tastatură (Modificat pentru Q și E)
+        // Modificăm clasa de animație invers, bazată pe ascundere, ca să ruleze curat din Lua
+        window.setMenuState = function(visible) {
+            if (visible) {
+                menuBox.classList.remove('menu-hidden');
+            } else {
+                menuBox.classList.add('menu-hidden');
+            }
+        };
+
+        // NAVIGARE DE TEST ÎN BROWSER (Apeși tastele direct când deschizi fișierul în Chrome)
         window.addEventListener('keydown', function(e) {
-            const currentPanel = document.getElementById(`panel-${activeTab}`);
-            const options = currentPanel.querySelectorAll('.menu-option');
-
-            // Folosim e.key.toLowerCase() pentru a funcționa indiferent dacă ai CapsLock pornit sau nu
-            const key = e.key.toLowerCase();
-
-            switch(e.key) {
-                case "ArrowUp": // Mergi în sus în listă
-                    if (activeOption > 0) {
-                        activeOption--;
-                        updateMenu();
-                    }
-                    break;
-                case "ArrowDown": // Mergi în jos în listă
-                    if (activeOption < options.length - 1) {
-                        activeOption++;
-                        updateMenu();
-                    }
-                    break;
-                case "Enter": // Executare acțiune curentă
-                    if (options[activeOption]) {
-                        const action = options[activeOption].getAttribute('data-action');
-                        sendActionToLua(action);
-                    }
-                    break;
+            // Tasta INSERT -> Închide/Deschide meniul pe ecran pe browser
+            if (e.key === "Insert") {
+                bOpen = !bOpen;
+                window.setMenuState(bOpen);
+                return;
             }
 
-            // Gestionarea tastelor Q și E separat pentru compatibilitate maximă
-            if (key === 'q') { // Tasta Q -> Schimbă categoria la stânga
-                if (activeTab > 0) {
-                    activeTab--;
-                    activeOption = 0; // Reset pe prima opțiune din noul tab
-                    updateMenu();
-                }
-            } else if (key === 'e') { // Tasta E -> Schimbă categoria la dreapta
-                if (activeTab < categories.length - 1) {
-                    activeTab++;
-                    activeOption = 0; // Reset pe prima opțiune din noul tab
-                    updateMenu();
-                }
+            if (!bOpen) return;
+
+            if (e.key === "q" || e.key === "Q") {
+                if (bTab > 0) { bTab--; bOpt = 0; window.updateSelection(bTab, bOpt); }
+            }
+            else if (e.key === "e" || e.key === "E") {
+                if (bTab < 2) { bTab++; bOpt = 0; window.updateSelection(bTab, bOpt); }
+            }
+            else if (e.key === "ArrowUp") {
+                if (bOpt > 0) { bOpt--; window.updateSelection(bTab, bOpt); }
+            }
+            else if (e.key === "ArrowDown") {
+                if (bOpt < bLimits[bTab]) { bOpt++; window.updateSelection(bTab, bOpt); }
+            }
+            else if (e.key === "Enter") {
+                const activePanel = document.getElementById(`panel-${bTab}`);
+                const optionText = activePanel.querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
+                console.log(`[TEST BROWSER] Executat: ${optionText}`);
             }
         });
-
-        // Trimitere acțiune înapoi în scriptul din Macho Executor
-        function sendActionToLua(actionName) {
-            fetch(`https://${GetParentResourceName()}/machoAction`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8'
-                },
-                body: JSON.stringify({ action: actionName })
-            }).catch(err => {
-                console.log("[Tastatură] Executat din listă: " + actionName);
-            });
-        }
     </script>
 </body>
 </html>
