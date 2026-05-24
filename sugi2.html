@@ -24,14 +24,14 @@
             width: 100vw;
             overflow: hidden;
             padding: 30px;               
-            /* [ANIMATION] Intrare fluidă a întregului body */
+            /* [ANIMATION] Intrare fluidă a întregului body la încărcare */
             animation: fadeInBody 0.6s ease-out;
         }
 
-        /* [KEFRAMES] Animație intrare scenă */
+        /* [KEFRAMES] Animație deschidere scenă */
         @keyframes fadeInBody {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(-15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .menu-box {
@@ -39,23 +39,22 @@
             background: rgba(13, 14, 18, 0.96);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 14px;
-            /* [ELEGANCE] Shadow mai difuz și adânc */
+            /* [ANIMATION] Shadow mai difuz și adânc, cu un glow subtil */
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 
                         0 0 50px rgba(78, 5, 160, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             
-            /* [ELEGANCE] Border glow subtil violet static */
+            /* [ANIMATION] Tranziție securizată pentru stările de show/hide */
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
         }
         
-        .menu-box::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 14px;
-            border: 1px solid rgba(114, 137, 218, 0.1);
+        /* [ANIMATION] Clasa pentru starea ASCUNSĂ (Closed) */
+        .menu-box.closed {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
             pointer-events: none;
         }
 
@@ -67,13 +66,13 @@
             background-position: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             
-            /* [ANIMATION] Efect de 'depth' la încarcare */
+            /* [ANIMATION] Efect de 'depth reveal' la încarcare */
             animation: bannerDepth 1s ease-out;
             transform-origin: top;
         }
         
         @keyframes bannerDepth {
-            from { transform: scaleY(1.2) translateY(-10px); opacity: 0; }
+            from { transform: scaleY(1.3) translateY(-10px); opacity: 0; }
             to { transform: scaleY(1) translateY(0); opacity: 1; }
         }
 
@@ -81,7 +80,7 @@
             display: flex;
             background: rgba(20, 21, 26, 0.98);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0; /* Curățat padding pentru aliniere perfectă indicator */
+            padding: 0; /* Curățat padding pentru indicator animat */
             position: relative;
         }
 
@@ -95,16 +94,15 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             
-            /* [ANIMATION] Tranziție lină culori tab neselectat */
+            /* [ANIMATION] Tranziție culori tab */
             transition: color 0.3s ease, background-color 0.3s ease;
             position: relative;
-            overflow: hidden;
         }
 
         .category-tab.active {
-            color: #ffffff; /* [ELEGANCE] Alb pur pe activ pentru contrast */
+            color: #ffffff; /* Contrast maxim activ */
             background: rgba(78, 5, 160, 0.06);
-            /* Box-shadow original dezactivat pentru indicatorul animat custom */
+            /* Box-shadow original dezactivat pentru indicator animat custom */
             box-shadow: none; 
         }
         
@@ -127,11 +125,11 @@
         }
 
         .menu-content {
-            padding: 25px 20px; /* [ELEGANCE] Puțin mai mult spațiu vertical */
+            padding: 25px 20px; /* Spațiu vertical generos */
             display: flex;
             flex-direction: column;
-            gap: 8px; /* [ELEGANCE] Gap puțin mai mare */
-            max-height: 340px; /* Ajustat subtil */
+            gap: 8px; /* Gap constant */
+            max-height: 340px; 
             overflow: hidden;
             background: rgba(13, 14, 18, 0.5); /* Adâncime conținut */
         }
@@ -158,34 +156,20 @@
             width: 100%;
             background: rgba(255, 255, 255, 0.015);
             border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 10px; /* [ELEGANCE] Rotunjire mai modernă */
-            padding: 16px 20px; /* [ELEGANCE] Padding mai generos */
+            border-radius: 10px; /* Rotunjire modernă */
+            padding: 16px 20px;
             font-size: 13px;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.8);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            opacity: 0.3; /* [ELEGANCE] Mai stins când e inactiv */
+            opacity: 0.3; /* Mai stins când e inactiv */
             
-            /* [ANIMATION] Tranziție ultra-fluidă pentru focused state */
-            transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+            /* [ANIMATION] Tranziție rapidă și fluidă pentru focused state */
+            transition: all 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
             
             position: relative;
-            overflow: hidden;
-        }
-
-        /* [ANIMATION] Shimmer effect discret pe fundal neselectat */
-        .menu-option::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent);
-            transition: left 0.5s;
-        }
-        .menu-option:hover::before {
-            left: 100%;
         }
 
         /* [ANIMATION & ELEGANCE] Stilul modern FOCUSED (Săgeți) */
@@ -196,11 +180,11 @@
             border-color: rgba(114, 137, 218, 0.5); /* Border glow violet */
             font-weight: 600;
             
-            /* [ELEGANCE] Efect de neon glow violet expandat */
+            /* Efect de neon glow violet expandat */
             box-shadow: 0 0 25px rgba(78, 5, 160, 0.3), 
                         inset 0 0 10px rgba(114, 137, 218, 0.1);
             
-            /* [ANIMATION] Mic 'pop' vizual la selectare */
+            /* Mic 'pop' vizual securizat la selectare */
             transform: scale(1.015);
         }
 
@@ -212,19 +196,18 @@
             letter-spacing: 1px;
             
             /* [ANIMATION] Tranziție tag */
-            transition: color 0.3s ease, transform 0.3s ease;
+            transition: color 0.3s ease;
         }
 
         .menu-option.focused .status-tag {
             color: #7289da; /* Neon albastru tag activ */
             text-shadow: 0 0 8px rgba(114, 137, 218, 0.6);
-            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
 
-    <div class="menu-box">
+    <div id="macho-menu" class="menu-box closed">
         <div class="menu-banner"></div>
 
         <div class="categories-bar">
@@ -254,6 +237,16 @@
 
     <script>
         const categories = Array.from(document.querySelectorAll('.category-tab'));
+        const menuBox = document.getElementById('macho-menu');
+
+        // [ANIMATION LOGIC] Funcții pentru controlul deschiderii/închiderii
+        window.MachoShowMenu = function() {
+            menuBox.classList.remove('closed');
+        };
+
+        window.MachoHideMenu = function() {
+            menuBox.classList.add('closed');
+        };
 
         // [LOGIC UNTOUCHED] Funcția globală apelată prin MachoExecuteDuiScript din Lua
         window.updateSelection = function(tabIdx, optionIdx) {
