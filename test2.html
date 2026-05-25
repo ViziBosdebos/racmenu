@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reason Menu Custom</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
 
         :root {
             --accent-color: 78, 5, 160;
@@ -287,18 +287,15 @@
             promptPanel.classList.add('active');
             setTimeout(() => { promptInput.focus(); }, 50);
             
-            if (window.GetParentResourceName) {
-                fetch(`https://${window.GetParentResourceName()}/machoFocusInput`, { method: 'POST', body: JSON.stringify({ focus: true }) });
-            }
+            // Folosim postMessage (sigur si pe browser si pe DUI)
+            window.postMessage(JSON.stringify({ action: "machoFocusInput", focus: true }), "*");
         };
 
         window.inchideMachoPrompt = function() {
             promptActive = false;
             promptPanel.classList.remove('active');
             promptInput.blur();
-            if (window.GetParentResourceName) {
-                fetch(`https://${window.GetParentResourceName()}/machoFocusInput`, { method: 'POST', body: JSON.stringify({ focus: false }) });
-            }
+            window.postMessage(JSON.stringify({ action: "machoFocusInput", focus: false }), "*");
         };
 
         window.updateSelection = function(tabIdx, optionIdx, forceSub) {
@@ -370,14 +367,7 @@
                 if (e.key === "Enter") {
                     const value = promptInput.value.trim();
                     if (value !== "") {
-                        if (window.GetParentResourceName) {
-                            fetch(`https://${window.GetParentResourceName()}/machoSubmitPrompt`, {
-                                method: 'POST',
-                                body: JSON.stringify({ input: value })
-                            });
-                        } else {
-                            window.createMachoNotification("SAI DEBUG", "ID trimis local (Browser): " + value);
-                        }
+                        window.postMessage(JSON.stringify({ action: "machoSubmitPrompt", input: value }), "*");
                         window.inchideMachoPrompt();
                     }
                 } else if (e.key === "Escape") {
@@ -408,24 +398,19 @@
                 } else {
                     const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
                     window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
-                    if (window.GetParentResourceName) {
-                        fetch(`https://${window.GetParentResourceName()}/machoClickOption`, { method: 'POST', body: JSON.stringify({ tab: bTab, opt: bOpt }) });
-                    }
                 }
             }
         });
 
-        // VERIFICARE MEDIU EXECUTIE: local pe browser vs in interiorul jocului (DUI / NUI)
+        // DETECTARE BROWSER REGULATĂ VS JOC
         const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
         
         if (isNormalBrowser) {
-            // Suntem in browser: dam skip direct la panoul de key setup si fortam afisarea meniului
             document.body.classList.add('is-browser-mode');
             window.inchideSetupPanel();
             window.setMenuState(true);
             window.updateSelection(0, 0, false);
         } else {
-            // Suntem in joc: se pastreaza logica intacta, panoul asteapta tasta trimisa de codul Lua
             document.getElementById('macho-setup-panel').classList.remove('hidden');
         }
     </script>
