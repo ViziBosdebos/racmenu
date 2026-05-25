@@ -63,6 +63,7 @@
             width: calc(100% - 32px); margin: 16px; padding: 14px; background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 8px; color: #ffffff;
             font-size: 13px; outline: none; transition: all 0.2s ease;
+            user-select: text !important; -webkit-user-select: text !important; /* Permite selectarea și scrierea textului nativ în input */
         }
         .prompt-input-field:focus {
             background: rgba(var(--accent-color), 0.05); border-color: rgb(var(--accent-color));
@@ -241,7 +242,10 @@
             promptSai.classList.add('active');
             promptSaiDeschis = true;
             saiInputBox.value = "";
-            setTimeout(() => { saiInputBox.focus(); }, 100);
+            setTimeout(() => { 
+                saiInputBox.focus(); 
+                saiInputBox.select();
+            }, 50);
         };
 
         window.inchidePromptSAI = function() {
@@ -250,9 +254,9 @@
             saiInputBox.blur();
         };
 
+        // Blocăm complet propagarea tastelor apăsate când scriem în input field
         saiInputBox.addEventListener('keydown', function(e) {
-            if (!promptSaiDeschis) return;
-            e.stopPropagation(); -- Această linie împiedică propagarea tastelor apăsate către listenerul de navigare global când tastezi
+            e.stopPropagation(); 
 
             if (e.key === "Escape") {
                 if (window.invokeNative) {
@@ -261,12 +265,10 @@
                 window.inchidePromptSAI();
             } else if (e.key === "Enter") {
                 let textIntrodus = saiInputBox.value;
-                if (textIntrodus.trim() !== "") {
-                    if (window.invokeNative) {
+                if (window.invokeNative) {
+                    if (textIntrodus.trim() !== "") {
                         window.invokeNative('ExecuteCommand', 'macho_sai_input ' + textIntrodus);
-                    }
-                } else {
-                    if (window.invokeNative) {
+                    } else {
                         window.invokeNative('ExecuteCommand', 'macho_sai_input __INCHIDE_PROMPT__');
                     }
                 }
@@ -355,7 +357,7 @@
 
         const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
         window.addEventListener('keydown', function(e) {
-            if (!bOpen || promptSaiDeschis) return; -- Dacă promptul SAI este deschis, oprim navigarea în meniu ca să nu se blocheze
+            if (!bOpen || promptSaiDeschis) return; 
             let limitaCurenta = inSubcategory ? 5 : bLimits[bTab];
 
             if (e.key === "q" || e.key === "Q") { if (!inSubcategory && bTab > 0) window.updateSelection(bTab - 1, 0, false); }
