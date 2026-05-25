@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reason Menu Custom</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
         :root {
             --accent-color: 78, 5, 160;
             --accent-glow: rgba(78, 5, 160, 0.45);
             --accent-border: rgba(114, 137, 218, 0.5);
             --tag-color: #7289da;
+            --anim-curve: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         html, body {
@@ -24,16 +25,22 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
 
         .setup-keybind-wrapper {
-            position: absolute; top: 40px; left: 40px; width: 300px;
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            width: 300px;
             background: rgba(13, 14, 18, 0.98); border: 1px solid rgba(255, 255, 255, 0.05);
             border-bottom: 2px solid var(--tag-color); border-radius: 10px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 30px rgba(var(--accent-color), 0.1);
             overflow: hidden; display: flex; flex-direction: column; z-index: 10000;
-            transition: opacity 0.25s ease, transform 0.25s ease;
+            transform: translate(-50%, -50%) scale(1);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .setup-keybind-wrapper.hidden {
-            opacity: 0 !important; transform: translateY(-20px) scale(0.95) !important; pointer-events: none !important;
+            opacity: 0 !important; 
+            transform: translate(-50%, -70%) scale(0.9) !important; 
+            pointer-events: none !important;
         }
 
         .setup-header { padding: 14px 18px; background: rgba(20, 21, 26, 0.97); border-bottom: 1px solid rgba(255, 255, 255, 0.04); display: flex; align-items: center; gap: 10px; }
@@ -41,10 +48,41 @@
         .setup-title { font-size: 11px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 1px; }
         .setup-body { padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; background: rgba(13, 14, 18, 0.3); }
         .setup-label { font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.7); }
+        
         .setup-display-box {
             width: 90px; background: rgba(var(--accent-color), 0.15); border: 1px solid var(--tag-color);
             border-radius: 6px; padding: 8px 10px; font-size: 13px; font-weight: 700; color: #ffffff;
             text-align: center; text-transform: uppercase; box-shadow: 0 0 15px rgba(var(--accent-color), 0.3); letter-spacing: 0.5px;
+            animation: setupPulse 2s infinite ease-in-out;
+        }
+
+        .input-prompt-wrapper {
+            position: absolute; top: 50%; left: 50%; width: 340px;
+            background: rgba(13, 14, 18, 0.98); border: 1px solid rgba(var(--accent-color), 0.4);
+            border-radius: 12px; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 25px var(--accent-glow);
+            overflow: hidden; display: none; flex-direction: column; z-index: 10005;
+            transform: translate(-50%, -50%) scale(0.95); opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s var(--anim-curve);
+        }
+        .input-prompt-wrapper.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .prompt-header { padding: 16px 20px; background: rgba(18, 19, 24, 0.98); border-bottom: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 10px; }
+        .prompt-indicator { width: 4px; height: 14px; background: rgb(var(--accent-color)); border-radius: 2px; box-shadow: 0 0 10px rgb(var(--accent-color)); }
+        .prompt-title { font-size: 11px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 1px; }
+        .prompt-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .prompt-text { font-size: 13px; color: rgba(255, 255, 255, 0.75); font-weight: 500; }
+        .prompt-field-container { position: relative; width: 100%; }
+        .prompt-input {
+            width: 100%; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px; padding: 12px 14px; font-size: 14px; color: #ffffff; font-weight: 600;
+            outline: none; transition: border-color 0.25s, box-shadow 0.25s; text-align: center; letter-spacing: 1px;
+        }
+        .prompt-input:focus { border-color: var(--accent-border); box-shadow: 0 0 15px rgba(var(--accent-color), 0.25); }
+        .prompt-footer { padding: 0 20px 20px 20px; display: flex; justify-content: flex-end; gap: 10px; font-size: 10px; font-weight: 600; color: rgba(255, 255, 255, 0.3); text-transform: uppercase; }
+
+        @keyframes setupPulse {
+            0% { box-shadow: 0 0 10px rgba(var(--accent-color), 0.3); transform: scale(1); }
+            50% { box-shadow: 0 0 20px rgba(var(--accent-color), 0.6); transform: scale(1.03); }
+            100% { box-shadow: 0 0 10px rgba(var(--accent-color), 0.3); transform: scale(1); }
         }
 
         .menu-box {
@@ -52,44 +90,65 @@
             background: rgba(13, 14, 18, 0.96); border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 14px; box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(var(--accent-color), 0.15);
             overflow: hidden; display: flex; flex-direction: column; opacity: 0;
-            transform: translateY(-20px) scale(0.96); pointer-events: none;
-            transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translateY(30px) scale(0.95); pointer-events: none;
+            backdrop-filter: blur(8px);
+            transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .menu-box.menu-visible { opacity: 1 !important; transform: translateY(0) scale(1) !important; pointer-events: auto !important; }
         .menu-banner { width: 100%; height: 110px; background-image: url('https://i.ytimg.com/vi/GokDEuoHwoo/sddefault.jpg'); background-size: cover; background-position: center; border-bottom: 1px solid rgba(255, 255, 255, 0.04); transition: background-image 0.4s ease; }
         
         .categories-bar { display: flex; background: rgba(20, 21, 26, 0.98); border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 0; position: relative; }
-        .category-tab { flex: 1; text-align: center; padding: 14px 0; font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.3); text-transform: uppercase; letter-spacing: 1px; transition: color 0.25s ease; position: relative; }
-        .category-tab.active { color: #ffffff; background: rgba(var(--accent-color), 0.08); }
-        .category-tab::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 2px; background-color: var(--tag-color); transition: width 0.25s ease; transform: translateX(-50%); box-shadow: 0 0 10px var(--tag-color); }
-        .category-tab.active::after { width: 80%; }
+        .category-tab { flex: 1; text-align: center; padding: 14px 0; font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.3); text-transform: uppercase; letter-spacing: 1px; transition: color 0.25s ease; position: relative; z-index: 2; }
+        .category-tab.active { color: #ffffff; }
+        
+        .active-line {
+            position: absolute; bottom: 0; left: 0; width: 25%; height: 2px;
+            display: flex; justify-content: center; align-items: center; z-index: 3; pointer-events: none;
+            transition: transform 0.3s var(--anim-curve), width 0.3s var(--anim-curve);
+        }
+        .active-line::after { content: ''; width: 75%; height: 100%; background-color: var(--tag-color); box-shadow: 0 0 12px var(--tag-color), 0 0 4px var(--tag-color); border-radius: 2px; }
 
         .menu-content { padding: 22px 20px; display: flex; flex-direction: column; gap: 8px; min-height: 230px; overflow: hidden; background: rgba(13, 14, 18, 0.5); }
+        
         .tab-panel { display: none; flex-direction: column; gap: 8px; }
-        .tab-panel.active { display: flex; }
-        .submenu-view { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .tab-panel.active { display: flex; animation: panelSlideIn 0.3s ease-out forwards; }
+        .submenu-view { display: flex; flex-direction: column; gap: 8px; width: 100%; animation: panelSlideIn 0.3s ease-out forwards; }
+
+        @keyframes panelSlideIn {
+            from { opacity: 0; transform: translateX(8px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
 
         .menu-option {
             width: 100%; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.03);
             border-radius: 10px; padding: 16px 20px; font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.8);
-            display: flex; justify-content: space-between; align-items: center; opacity: 0.35; transition: all 0.1s linear;
+            display: flex; justify-content: space-between; align-items: center; opacity: 0.35; 
+            transition: transform 0.2s var(--anim-curve), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, color 0.2s ease;
         }
 
         .menu-option.focused {
             opacity: 1; color: #ffffff; background: rgba(var(--accent-color), 0.18); border-color: var(--accent-border); font-weight: 600;
-            box-shadow: 0 0 25px rgba(var(--accent-color), 0.35); transform: scale(1.015);
+            box-shadow: 0 0 25px rgba(var(--accent-color), 0.35); transform: scale(1.02) translateX(4px);
         }
 
-        .menu-option .status-tag { font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.15); text-transform: uppercase; letter-spacing: 1px; }
+        .menu-option .status-tag { font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.15); text-transform: uppercase; letter-spacing: 1px; transition: color 0.2s ease, text-shadow 0.2s ease; }
         .menu-option.focused .status-tag { color: var(--tag-color); text-shadow: 0 0 8px var(--tag-color); }
         .submenu-header-info { font-size: 10px; font-weight: 700; color: var(--tag-color); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: flex; justify-content: space-between; }
 
         #notification-container { position: fixed; top: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 99999; pointer-events: none; width: 280px; }
-        .macho-notify { width: 100%; background: rgba(10, 10, 13, 0.94); border-radius: 10px; border: 1px solid rgb(var(--accent-color)); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 18px var(--accent-glow); padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; animation: notifySlideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        .macho-notify.notify-fade-out { animation: notifySlideOut 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        @keyframes notifySlideIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes notifySlideOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(60px); } }
+        
+        .macho-notify { 
+            width: 100%; background: rgba(10, 10, 13, 0.94); border-radius: 10px; 
+            border: 1px solid rgb(var(--accent-color)); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 18px var(--accent-glow); 
+            padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; 
+            animation: notifySlideIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; 
+        }
+        .macho-notify.notify-fade-out { animation: notifySlideOut 0.4s cubic-bezier(0.32, 0, 0.67, 0) forwards; }
+        
+        @keyframes notifySlideIn { from { opacity: 0; transform: translateX(100%) scale(0.8); } to { opacity: 1; transform: translateX(0) scale(1); } }
+        @keyframes notifySlideOut { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(100%) scale(0.9); } }
+        
         .macho-notify-header { display: flex; justify-content: space-between; align-items: center; }
         .macho-notify-title { font-size: 10px; font-weight: 700; color: var(--tag-color); text-transform: uppercase; letter-spacing: 1.2px; }
         .macho-notify-time { font-size: 8px; font-weight: 500; color: rgba(255, 255, 255, 0.25); }
@@ -114,14 +173,32 @@
         </div>
     </div>
 
+    <div id="macho-prompt-panel" class="input-prompt-wrapper">
+        <div class="prompt-header">
+            <div class="prompt-indicator"></div>
+            <span class="prompt-title" id="macho-prompt-title">Input Dialog</span>
+        </div>
+        <div class="prompt-body">
+            <span class="prompt-text" id="macho-prompt-label">Introdu Server ID:</span>
+            <div class="prompt-field-container">
+                <input type="text" id="macho-prompt-input" class="prompt-input" placeholder="Ex: 1" maxlength="6">
+            </div>
+        </div>
+        <div class="prompt-footer">
+            <span>[Enter] Confirmă &nbsp;|&nbsp; [Esc] Închide</span>
+        </div>
+    </div>
+
     <div id="macho-main-box" class="menu-box">
         <div id="macho-banner-element" class="menu-banner"></div>
 
         <div class="categories-bar">
-            <div class="category-tab active">Self</div>
-            <div class="category-tab">Weapons</div>
-            <div class="category-tab">Exploits</div>
-            <div class="category-tab">Setări</div>
+            <div id="macho-active-line" class="active-line"></div>
+            <div id="tab-self" class="category-tab active">Self</div>
+            <div id="tab-weapons" class="category-tab">Weapons</div>
+            <div id="tab-exploits" class="category-tab">Exploits</div>
+            <div id="tab-setari" class="category-tab">Setări</div>
+            <div id="tab-banners-title" class="category-tab" style="display: none; flex: 1;">Banners</div>
         </div>
 
         <div class="menu-content">
@@ -139,6 +216,7 @@
             <div id="panel-2" class="tab-panel">
                 <div class="menu-option"><span>Anticheat Checker</span><span class="status-tag">[ENTER]</span></div>
                 <div class="menu-option"><span>Bypass Screenshot</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>SAI</span><span class="status-tag">[OPEN INPUT]</span></div>
             </div>
 
             <div id="panel-3" class="tab-panel">
@@ -146,7 +224,6 @@
                     <div class="menu-option"><span>Banners</span><span class="status-tag">[OPEN]</span></div>
                     <div class="menu-option"><span>Switch UI</span><span class="status-tag">[EXEC]</span></div>
                 </div>
-
                 <div id="setari-banners-view" class="submenu-view" style="display: none;">
                     <div class="submenu-header-info"><span>Subcategorie: Banners</span><span>[BACKSPACE] inapoi</span></div>
                     <div class="menu-option"><span>Banner Default (RAC)</span><span class="status-tag">[SELECT]</span></div>
@@ -175,15 +252,24 @@
         const keyDisplayBox = document.getElementById('macho-key-display-box');
         const notifyContainer = document.getElementById('notification-container');
         const bannerElement = document.getElementById('macho-banner-element');
-        const categoriesBar = document.querySelector('.categories-bar');
+        const slidingLine = document.getElementById('macho-active-line');
+        const promptPanel = document.getElementById('macho-prompt-panel');
+        const promptInput = document.getElementById('macho-prompt-input');
+        const promptLabelText = document.getElementById('macho-prompt-label');
 
         const setariMainView = document.getElementById('setari-main-view');
         const setariBannersView = document.getElementById('setari-banners-view');
 
-        let bOpen = false, bTab = 0, bOpt = 0, inSubcategory = false;
-        const bLimits = { [0]: 2, [1]: 1, [2]: 1, [3]: 1 };
+        const normalTabs = [
+            document.getElementById('tab-self'),
+            document.getElementById('tab-weapons'),
+            document.getElementById('tab-exploits'),
+            document.getElementById('tab-setari')
+        ];
+        const subcategoryTabTitle = document.getElementById('tab-banners-title');
 
-        setupPanel.classList.remove('hidden');
+        let bOpen = false, bTab = 0, bOpt = 0, inSubcategory = false, promptActive = false;
+        const bLimits = { [0]: 2, [1]: 1, [2]: 2, [3]: 1 };
 
         window.seteazaTastaAfisata = function(textTasta) {
             if(textTasta) keyDisplayBox.innerText = textTasta.toUpperCase();
@@ -193,49 +279,54 @@
             setupPanel.classList.add('hidden');
         };
 
+        window.deschideMachoPrompt = function(titlu, textLabel) {
+            if (titlu) document.getElementById('macho-prompt-title').innerText = titlu;
+            if (textLabel) promptLabelText.innerText = textLabel;
+            promptInput.value = "";
+            promptActive = true;
+            promptPanel.classList.add('active');
+            setTimeout(() => { promptInput.focus(); }, 50);
+            
+            if (window.GetParentResourceName) {
+                fetch(`https://${window.GetParentResourceName()}/machoFocusInput`, { method: 'POST', body: JSON.stringify({ focus: true }) });
+            }
+        };
+
+        window.inchideMachoPrompt = function() {
+            promptActive = false;
+            promptPanel.classList.remove('active');
+            promptInput.blur();
+            if (window.GetParentResourceName) {
+                fetch(`https://${window.GetParentResourceName()}/machoFocusInput`, { method: 'POST', body: JSON.stringify({ focus: false }) });
+            }
+        };
+
         window.updateSelection = function(tabIdx, optionIdx, forceSub) {
+            if (promptActive) return;
             bTab = tabIdx; bOpt = optionIdx;
-            if (forceSub !== undefined) inSubcategory = forceSub;
 
             if (bTab === 3 && inSubcategory) {
                 setariMainView.style.display = 'none';
                 setariBannersView.style.display = 'flex';
-                categoriesBar.innerHTML = '<div class="category-tab active" style="flex: 1; text-align: center;">Banners</div>';
+                normalTabs.forEach(t => t.style.display = 'none');
+                subcategoryTabTitle.style.display = 'block';
+                if (slidingLine) { slidingLine.style.width = '100%'; slidingLine.style.transform = 'translateX(0%)'; }
             } else {
-                if (bTab === 3) {
-                    setariBannersView.style.display = 'none';
-                    setariMainView.style.display = 'flex';
-                } else {
-                    setariBannersView.style.display = 'none';
-                    setariMainView.style.display = 'flex';
-                    inSubcategory = false;
-                }
-                
-                categoriesBar.innerHTML = `
-                    <div class="category-tab">Self</div>
-                    <div class="category-tab">Weapons</div>
-                    <div class="category-tab">Exploits</div>
-                    <div class="category-tab">Setări</div>
-                `;
+                if (bTab === 3) { setariBannersView.style.display = 'none'; setariMainView.style.display = 'flex'; }
+                else { setariBannersView.style.display = 'none'; setariMainView.style.display = 'flex'; inSubcategory = false; }
+                subcategoryTabTitle.style.display = 'none';
+                normalTabs.forEach(t => t.style.display = 'block');
+                if (slidingLine) { slidingLine.style.width = '25%'; slidingLine.style.transform = `translateX(${tabIdx * 100}%)`; }
             }
 
-            const currentCategories = Array.from(document.querySelectorAll('.category-tab'));
-            
             if (!inSubcategory) {
-                currentCategories.forEach((cat, idx) => {
-                    if (idx === tabIdx) {
-                        cat.classList.add('active');
-                        document.getElementById(`panel-${idx}`).classList.add('active');
-                    } else {
-                        cat.classList.remove('active');
-                        document.getElementById(`panel-${idx}`).classList.remove('active');
-                    }
+                normalTabs.forEach((cat, idx) => {
+                    if (idx === tabIdx) { cat.classList.add('active'); document.getElementById(`panel-${idx}`).classList.add('active'); }
+                    else { cat.classList.remove('active'); document.getElementById(`panel-${idx}`).classList.remove('active'); }
                 });
             } else {
-                categories.forEach((cat, idx) => {
-                    if (idx === 3) document.getElementById(`panel-${idx}`).classList.add('active');
-                    else document.getElementById(`panel-${idx}`).classList.remove('active');
-                });
+                normalTabs.forEach((cat) => cat.classList.remove('active'));
+                document.getElementById(`panel-3`).classList.add('active');
             }
 
             const currentPanel = document.getElementById(`panel-${tabIdx}`);
@@ -250,7 +341,7 @@
         window.setMenuState = function(visible) {
             bOpen = visible;
             if (visible) menuBox.classList.add('menu-visible');
-            else menuBox.classList.remove('menu-visible');
+            else { menuBox.classList.remove('menu-visible'); window.inchideMachoPrompt(); }
         };
 
         window.changeMenuTheme = function(themeName) {
@@ -274,41 +365,68 @@
             setTimeout(() => { notifyBox.remove(); }, 4000);
         };
 
-        const categories = Array.from(document.querySelectorAll('.category-tab'));
-
-        const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
-        if (isNormalBrowser) {
-            document.body.classList.add('is-browser-mode');
-            setTimeout(() => {
-                window.inchideSetupPanel();
-                window.setMenuState(true);
-                window.updateSelection(0, 0, false);
-            }, 50);
-
-            window.addEventListener('keydown', function(e) {
-                if (!bOpen) return;
-                let limitaCurenta = inSubcategory ? 5 : bLimits[bTab];
-
-                if (e.key === "q" || e.key === "Q") { if (!inSubcategory && bTab > 0) window.updateSelection(bTab - 1, 0, false); }
-                else if (e.key === "e" || e.key === "E") { if (!inSubcategory && bTab < 3) window.updateSelection(bTab + 1, 0, false); }
-                else if (e.key === "ArrowUp") { if (bOpt > 0) window.updateSelection(bTab, bOpt - 1, inSubcategory); }
-                else if (e.key === "ArrowDown") { if (bOpt < limitaCurenta) window.updateSelection(bTab, bOpt + 1, inSubcategory); }
-                else if (e.key === "Backspace" && bTab === 3 && inSubcategory) { window.updateSelection(3, 0, false); window.createMachoNotification("SETĂRI", "Te-ai întors în meniul principal."); }
-                else if (e.key === "Enter") {
-                    if (bTab === 3) {
-                        if (!inSubcategory) {
-                            if (bOpt === 0) window.updateSelection(3, 0, true);
-                            else window.createMachoNotification("SETĂRI", 'Switch UI a fost rulat!');
+        window.addEventListener('keydown', function(e) {
+            if (promptActive) {
+                if (e.key === "Enter") {
+                    const value = promptInput.value.trim();
+                    if (value !== "") {
+                        if (window.GetParentResourceName) {
+                            fetch(`https://${window.GetParentResourceName()}/machoSubmitPrompt`, {
+                                method: 'POST',
+                                body: JSON.stringify({ input: value })
+                            });
                         } else {
-                            const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
-                            window.changeMenuTheme(themeKeys[bOpt]);
+                            window.createMachoNotification("SAI DEBUG", "ID trimis local (Browser): " + value);
                         }
+                        window.inchideMachoPrompt();
+                    }
+                } else if (e.key === "Escape") {
+                    window.inchideMachoPrompt();
+                }
+                return;
+            }
+
+            if (!bOpen) return;
+            let limitaCurenta = inSubcategory ? 5 : bLimits[bTab];
+
+            if (e.key === "q" || e.key === "Q") { if (!inSubcategory && bTab > 0) window.updateSelection(bTab - 1, 0, false); }
+            else if (e.key === "e" || e.key === "E") { if (!inSubcategory && bTab < 3) window.updateSelection(bTab + 1, 0, false); }
+            else if (e.key === "ArrowUp") { if (bOpt > 0) window.updateSelection(bTab, bOpt - 1, inSubcategory); }
+            else if (e.key === "ArrowDown") { if (bOpt < limitaCurenta) window.updateSelection(bTab, bOpt + 1, inSubcategory); }
+            else if (e.key === "Backspace" && bTab === 3 && inSubcategory) { window.updateSelection(3, 0, false); window.createMachoNotification("SETĂRI", "Te-ai întors în meniul principal."); }
+            else if (e.key === "Enter") {
+                if (bTab === 2 && bOpt === 2) {
+                    window.deschideMachoPrompt("SAI MODULE", "Introdu Server ID:");
+                } else if (bTab === 3) {
+                    if (!inSubcategory) {
+                        if (bOpt === 0) window.updateSelection(3, 0, true);
+                        else window.createMachoNotification("SETĂRI", 'Switch UI a fost rulat!');
                     } else {
-                        const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
-                        window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
+                        const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
+                        window.changeMenuTheme(themeKeys[bOpt]);
+                    }
+                } else {
+                    const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
+                    window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
+                    if (window.GetParentResourceName) {
+                        fetch(`https://${window.GetParentResourceName()}/machoClickOption`, { method: 'POST', body: JSON.stringify({ tab: bTab, opt: bOpt }) });
                     }
                 }
-            });
+            }
+        });
+
+        // VERIFICARE MEDIU EXECUTIE: local pe browser vs in interiorul jocului (DUI / NUI)
+        const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
+        
+        if (isNormalBrowser) {
+            // Suntem in browser: dam skip direct la panoul de key setup si fortam afisarea meniului
+            document.body.classList.add('is-browser-mode');
+            window.inchideSetupPanel();
+            window.setMenuState(true);
+            window.updateSelection(0, 0, false);
+        } else {
+            // Suntem in joc: se pastreaza logica intacta, panoul asteapta tasta trimisa de codul Lua
+            document.getElementById('macho-setup-panel').classList.remove('hidden');
         }
     </script>
 </body>
