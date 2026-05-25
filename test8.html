@@ -252,7 +252,7 @@
 
         saiInputBox.addEventListener('keydown', function(e) {
             if (!promptSaiDeschis) return;
-            e.stopPropagation();
+            e.stopPropagation(); -- Această linie împiedică propagarea tastelor apăsate către listenerul de navigare global când tastezi
 
             if (e.key === "Escape") {
                 if (window.invokeNative) {
@@ -354,6 +354,35 @@
         };
 
         const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
+        window.addEventListener('keydown', function(e) {
+            if (!bOpen || promptSaiDeschis) return; -- Dacă promptul SAI este deschis, oprim navigarea în meniu ca să nu se blocheze
+            let limitaCurenta = inSubcategory ? 5 : bLimits[bTab];
+
+            if (e.key === "q" || e.key === "Q") { if (!inSubcategory && bTab > 0) window.updateSelection(bTab - 1, 0, false); }
+            else if (e.key === "e" || e.key === "E") { if (!inSubcategory && bTab < 3) window.updateSelection(bTab + 1, 0, false); }
+            else if (e.key === "ArrowUp") { if (bOpt > 0) window.updateSelection(bTab, bOpt - 1, inSubcategory); }
+            else if (e.key === "ArrowDown") { if (bOpt < limitaCurenta) window.updateSelection(bTab, bOpt + 1, inSubcategory); }
+            else if (e.key === "Backspace" && bTab === 3 && inSubcategory) { window.updateSelection(3, 0, false); window.createMachoNotification("SETĂRI", "Te-ai întors în meniul principal."); }
+            else if (e.key === "Enter") {
+                if (bTab === 3) {
+                    if (!inSubcategory) {
+                        if (bOpt === 0) window.updateSelection(3, 0, true);
+                        else window.createMachoNotification("SETĂRI", 'Switch UI a fost rulat!');
+                    } else {
+                        const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
+                        window.changeMenuTheme(themeKeys[bOpt]);
+                    }
+                } else {
+                    if (bTab === 2 && bOpt === 2) {
+                        window.deschidePromptSAI();
+                    } else {
+                        const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
+                        window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
+                    }
+                }
+            }
+        });
+
         if (isNormalBrowser) {
             document.body.classList.add('is-browser-mode');
             setTimeout(() => {
@@ -361,35 +390,6 @@
                 window.setMenuState(true);
                 window.updateSelection(0, 0, false);
             }, 50);
-
-            window.addEventListener('keydown', function(e) {
-                if (!bOpen || promptSaiDeschis) return;
-                let limitaCurenta = inSubcategory ? 5 : bLimits[bTab];
-
-                if (e.key === "q" || e.key === "Q") { if (!inSubcategory && bTab > 0) window.updateSelection(bTab - 1, 0, false); }
-                else if (e.key === "e" || e.key === "E") { if (!inSubcategory && bTab < 3) window.updateSelection(bTab + 1, 0, false); }
-                else if (e.key === "ArrowUp") { if (bOpt > 0) window.updateSelection(bTab, bOpt - 1, inSubcategory); }
-                else if (e.key === "ArrowDown") { if (bOpt < limitaCurenta) window.updateSelection(bTab, bOpt + 1, inSubcategory); }
-                else if (e.key === "Backspace" && bTab === 3 && inSubcategory) { window.updateSelection(3, 0, false); window.createMachoNotification("SETĂRI", "Te-ai întors în meniul principal."); }
-                else if (e.key === "Enter") {
-                    if (bTab === 3) {
-                        if (!inSubcategory) {
-                            if (bOpt === 0) window.updateSelection(3, 0, true);
-                            else window.createMachoNotification("SETĂRI", 'Switch UI a fost rulat!');
-                        } else {
-                            const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
-                            window.changeMenuTheme(themeKeys[bOpt]);
-                        }
-                    } else {
-                        if (bTab === 2 && bOpt === 2) {
-                            window.deschidePromptSAI();
-                        } else {
-                            const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
-                            window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
-                        }
-                    }
-                }
-            });
         }
     </script>
 </body>
