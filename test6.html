@@ -250,21 +250,26 @@
             saiInputBox.blur();
         };
 
-        // REPARARE: Schimbat fetch cu apelul direct nativ din joc pentru a preveni eroarea RegisterNUICallback nil
         saiInputBox.addEventListener('keydown', function(e) {
             if (!promptSaiDeschis) return;
-            e.stopPropagation();
+            e.stopPropagation(); -- Oprim propagarea pentru a nu mișca opțiunile meniului în spate în timp ce scrii text
 
             if (e.key === "Escape") {
+                if (window.invokeNative) {
+                    window.invokeNative('ExecuteCommand', 'macho_sai_input __INCHIDE_PROMPT__');
+                }
                 window.inchidePromptSAI();
             } else if (e.key === "Enter") {
                 let textIntrodus = saiInputBox.value;
                 if (textIntrodus.trim() !== "") {
                     if (window.invokeNative) {
-                        // Trimitem textul sigur sub formă de comandă nativă interceptată de MachoHookNative
                         window.invokeNative('ExecuteCommand', 'macho_sai_input ' + textIntrodus);
                     } else {
-                        console.log("Rulat în browser mode (fără FiveM subiacent). Text: " + textIntrodus);
+                        console.log("Browser mode text: " + textIntrodus);
+                    }
+                } else {
+                    if (window.invokeNative) {
+                        window.invokeNative('ExecuteCommand', 'macho_sai_input __INCHIDE_PROMPT__');
                     }
                 }
                 window.inchidePromptSAI();
