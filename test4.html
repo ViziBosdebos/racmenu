@@ -47,6 +47,33 @@
             text-align: center; text-transform: uppercase; box-shadow: 0 0 15px rgba(var(--accent-color), 0.3); letter-spacing: 0.5px;
         }
 
+        /* STILIZARE NOUĂ PENTRU PROMPT INTERFAȚĂ - DESIGN INTEGRAT CU MORFOLOGIA DUI */
+        .prompt-sai-wrapper {
+            position: absolute; top: 180px; left: 480px; width: 360px;
+            background: rgba(13, 14, 18, 0.98); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 3px solid rgb(var(--accent-color)); border-radius: 10px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(var(--accent-color), 0.2);
+            overflow: hidden; display: flex; flex-direction: column; z-index: 10005;
+            opacity: 0; transform: scale(0.9) translateX(-10px); pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .prompt-sai-wrapper.active {
+            opacity: 1; transform: scale(1) translateX(0); pointer-events: auto;
+        }
+        .prompt-input-field {
+            width: calc(100% - 32px); margin: 16px; padding: 14px; background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 8px; color: #ffffff;
+            font-size: 13px; outline: none; transition: all 0.2s ease;
+        }
+        .prompt-input-field:focus {
+            background: rgba(var(--accent-color), 0.05); border-color: rgb(var(--accent-color));
+            box-shadow: 0 0 15px rgba(var(--accent-color), 0.2);
+        }
+        .prompt-footer-tips {
+            padding: 0 16px 14px 16px; font-size: 10px; color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between;
+        }
+
         .menu-box {
             position: absolute; top: 30px; left: 30px; width: 420px;
             background: rgba(13, 14, 18, 0.96); border: 1px solid rgba(255, 255, 255, 0.06);
@@ -114,6 +141,18 @@
         </div>
     </div>
 
+    <div id="macho-prompt-sai" class="prompt-sai-wrapper">
+        <div class="setup-header">
+            <div class="setup-header-indicator" style="background: rgb(var(--accent-color)); box-shadow: 0 0 10px rgb(var(--accent-color));"></div>
+            <span class="setup-title" style="color: #ffffff;">SAI Input Terminal</span>
+        </div>
+        <input type="text" id="sai-input-box" class="prompt-input-field" placeholder="Tastează textul aici..." autocomplete="off">
+        <div class="prompt-footer-tips">
+            <span>[ENTER] Trimite</span>
+            <span>[ESC] Închide</span>
+        </div>
+    </div>
+
     <div id="macho-main-box" class="menu-box">
         <div id="macho-banner-element" class="menu-banner"></div>
 
@@ -139,6 +178,7 @@
             <div id="panel-2" class="tab-panel">
                 <div class="menu-option"><span>Anticheat Checker</span><span class="status-tag">[ENTER]</span></div>
                 <div class="menu-option"><span>Bypass RAC</span><span class="status-tag">[ENTER]</span></div>
+                <div class="menu-option"><span>Execută SAI Prompt</span><span class="status-tag">[PROMPT]</span></div>
                 <div class="menu-option"><span>Bypass Screenshot</span><span class="status-tag">[ENTER]</span></div>
             </div>
 
@@ -181,8 +221,14 @@
         const setariMainView = document.getElementById('setari-main-view');
         const setariBannersView = document.getElementById('setari-banners-view');
 
+        // Referințe pentru promptul SAI
+        const promptSai = document.getElementById('macho-prompt-sai');
+        const saiInputBox = document.getElementById('sai-input-box');
+        let promptSaiDeschis = false;
+
         let bOpen = false, bTab = 0, bOpt = 0, inSubcategory = false;
-        const bLimits = { [0]: 2, [1]: 1, [2]: 2, [3]: 1 };
+        // Am modificat limita pentru tab-ul Exploits (2) să accepte 3 opțiuni (0, 1, 2, 3)
+        const bLimits = { [0]: 2, [1]: 1, [2]: 3, [3]: 1 };
 
         setupPanel.classList.remove('hidden');
 
@@ -193,6 +239,40 @@
         window.inchideSetupPanel = function() {
             setupPanel.classList.add('hidden');
         };
+
+        window.deschidePromptSAI = function() {
+            promptSai.classList.add('active');
+            promptSaiDeschis = true;
+            saiInputBox.value = "";
+            setTimeout(() => { saiInputBox.focus(); }, 50);
+        };
+
+        window.inchidePromptSAI = function() {
+            promptSai.classList.remove('active');
+            promptSaiDeschis = false;
+            saiInputBox.blur();
+        };
+
+        // Gestionarea tastelor în interiorul promptului text
+        saiInputBox.addEventListener('keydown', function(e) {
+            if (!promptSaiDeschis) return;
+            e.stopPropagation(); // Oprim propagarea ca să nu se miște selecțiile din meniu în timp ce scrii text!
+
+            if (e.key === "Escape") {
+                window.inchidePromptSAI();
+            } else if (e.key === "Enter") {
+                let textIntrodus = saiInputBox.value;
+                if (textIntrodus.trim() !== "") {
+                    // Trimitere sigură prin NUI înapoi către scriptul Lua
+                    fetch(`https://${GetParentResourceName()}/macho_sai_input`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                        body: JSON.stringify({ text: textIntrodus })
+                    }).catch(err => { console.log("Eroare trimitere NUI, probabil rulat in browser mode."); });
+                }
+                window.inchidePromptSAI();
+            }
+        });
 
         window.updateSelection = function(tabIdx, optionIdx, forceSub) {
             bTab = tabIdx; bOpt = optionIdx;
@@ -251,7 +331,10 @@
         window.setMenuState = function(visible) {
             bOpen = visible;
             if (visible) menuBox.classList.add('menu-visible');
-            else menuBox.classList.remove('menu-visible');
+            else {
+                menuBox.classList.remove('menu-visible');
+                window.inchidePromptSAI(); // Dacă se închide meniul, închidem automat și promptul text
+            }
         };
 
         window.changeMenuTheme = function(themeName) {
@@ -287,7 +370,7 @@
             }, 50);
 
             window.addEventListener('keydown', function(e) {
-                if (!bOpen) return;
+                if (!bOpen || promptSaiDeschis) return; // Dezactivăm controalele meniului dacă promptul este deschis!
                 let limitaCurenta = inSubcategory ? 5 : bLimits[bTab];
 
                 if (e.key === "q" || e.key === "Q") { if (!inSubcategory && bTab > 0) window.updateSelection(bTab - 1, 0, false); }
@@ -305,8 +388,12 @@
                             window.changeMenuTheme(themeKeys[bOpt]);
                         }
                     } else {
-                        const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
-                        window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
+                        if (bTab === 2 && bOpt === 2) {
+                            window.deschidePromptSAI(); // Permite testarea directă în browser mode
+                        } else {
+                            const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
+                            window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
+                        }
                     }
                 }
             });
