@@ -108,27 +108,27 @@
         .menu-option.focused .status-tag { color: var(--tag-color); text-shadow: 0 0 8px var(--tag-color); }
         .submenu-header-info { font-size: 10px; font-weight: 700; color: var(--tag-color); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: flex; justify-content: space-between; }
 
-        /* Stil Interfata Prompt Modern SAI */
+        /* Stil Prompt Modern Integrat */
         .macho-prompt-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(7, 8, 10, 0.85); backdrop-filter: blur(5px);
+            background: rgba(7, 8, 10, 0.75); backdrop-filter: blur(4px);
             z-index: 20000; display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
         .macho-prompt-wrapper.active { opacity: 1; pointer-events: auto; }
         .macho-prompt-box {
-            width: 340px; background: rgba(13, 14, 18, 0.99); border: 1px solid var(--accent-border);
-            border-radius: 12px; box-shadow: 0 35px 70px rgba(0,0,0,0.9), 0 0 45px rgba(var(--accent-color), 0.25);
-            overflow: hidden; animation: promptScale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            width: 320px; background: rgba(13, 14, 18, 0.98); border: 1px solid var(--accent-border);
+            border-radius: 12px; box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px rgba(var(--accent-color), 0.2);
+            overflow: hidden; animation: promptScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
-        @keyframes promptScale { from { transform: scale(0.88) translateY(12px); } to { transform: scale(1) translateY(0); } }
+        @keyframes promptScale { from { transform: scale(0.85) translateY(10px); } to { transform: scale(1) translateY(0); } }
         .macho-prompt-input {
-            width: calc(100% - 32px); margin: 18px 16px; background: rgba(255, 255, 255, 0.03);
+            width: calc(100% - 32px); margin: 16px; background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 12px 14px;
-            font-size: 14px; color: #ffffff; outline: none; text-align: center; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-size: 14px; color: #ffffff; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-        .macho-prompt-input:focus { border-color: var(--tag-color); box-shadow: 0 0 12px rgba(var(--accent-color), 0.35); }
-        .macho-prompt-footer { padding: 0 16px 18px 16px; display: flex; justify-content: center; gap: 10px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.5px; }
+        .macho-prompt-input:focus { border-color: var(--tag-color); box-shadow: 0 0 10px rgba(var(--accent-color), 0.3); }
+        .macho-prompt-footer { padding: 0 16px 16px 16px; display: flex; justify-content: flex-end; gap: 10px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; }
 
         #notification-container { position: fixed; top: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 99999; pointer-events: none; width: 280px; }
         
@@ -162,9 +162,9 @@
                 <div class="setup-header-indicator"></div>
                 <span class="setup-title" id="macho-prompt-title">Introduceți Numărul</span>
             </div>
-            <input type="number" id="macho-prompt-field" class="macho-prompt-input" placeholder="Scrie numărul aici..." />
+            <input type="number" id="macho-prompt-field" class="macho-prompt-input" placeholder="Scrie valoarea aici..." />
             <div class="macho-prompt-footer">
-                <span>[ENTER] Confirmă &nbsp;|&nbsp; [ESC] Închide</span>
+                <span>[ENTER] Confirmă &nbsp;|&nbsp; [ESC] Anulează</span>
             </div>
         </div>
     </div>
@@ -287,10 +287,6 @@
             }
         };
 
-        window.getPromptInputValue = function() {
-            return promptField.value;
-        };
-
         window.updateSelection = function(tabIdx, optionIdx, forceSub) {
             bTab = tabIdx; bOpt = optionIdx;
             if (forceSub !== undefined) inSubcategory = forceSub;
@@ -355,7 +351,6 @@
             setTimeout(() => { notifyBox.remove(); }, 4000);
         };
 
-        // Suport navigare pentru mod browser / test local offline
         const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
         if (isNormalBrowser) {
             document.body.classList.add('is-browser-mode');
@@ -368,7 +363,7 @@
                     if (e.key === "Escape") { window.machoTogglePrompt(false); }
                     else if (e.key === "Enter") {
                         let val = promptField.value;
-                        if (val !== "") { window.createMachoNotification("SAI PROMPT", "Număr introdus: " + val); window.machoTogglePrompt(false); }
+                        if (val !== "") { window.createMachoNotification("SAI PROMPT", "Trimis: " + val); window.machoTogglePrompt(false); }
                     }
                     return;
                 }
