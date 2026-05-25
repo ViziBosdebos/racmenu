@@ -50,8 +50,8 @@
         .setup-label { font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.7); }
         
         .setup-display-box {
-            width: 90px; background: rgba(var(--accent-color), 0.15); border: 1px solid var(--tag-color);
-            border-radius: 6px; padding: 8px 10px; font-size: 13px; font-weight: 700; color: #ffffff;
+            width: 120px; background: rgba(var(--accent-color), 0.15); border: 1px solid var(--tag-color);
+            border-radius: 6px; padding: 8px 10px; font-size: 11px; font-weight: 700; color: #ffffff;
             text-align: center; text-transform: uppercase; box-shadow: 0 0 15px rgba(var(--accent-color), 0.3); letter-spacing: 0.5px;
             animation: setupPulse 2s infinite ease-in-out;
         }
@@ -169,7 +169,7 @@
         </div>
         <div class="setup-body">
             <span class="setup-label">Keybind</span>
-            <div id="macho-key-display-box" class="setup-display-box">...</div>
+            <div id="macho-key-display-box" class="setup-display-box">Apasă o tastă...</div>
         </div>
     </div>
 
@@ -272,11 +272,11 @@
         const bLimits = { [0]: 2, [1]: 1, [2]: 2, [3]: 1 };
 
         window.seteazaTastaAfisata = function(textTasta) {
-            if(textTasta) keyDisplayBox.innerText = textTasta.toUpperCase();
+            if(textTasta && keyDisplayBox) keyDisplayBox.innerText = textTasta.toUpperCase();
         };
 
         window.inchideSetupPanel = function() {
-            setupPanel.classList.add('hidden');
+            if(setupPanel) setupPanel.classList.add('hidden');
         };
 
         window.deschideMachoPrompt = function(titlu, textLabel) {
@@ -287,15 +287,19 @@
             promptPanel.classList.add('active');
             setTimeout(() => { promptInput.focus(); }, 50);
             
-            // Folosim postMessage (sigur si pe browser si pe DUI)
-            window.postMessage(JSON.stringify({ action: "machoFocusInput", focus: true }), "*");
+            // Securizare apeluri native
+            if (window.nuiTarget) {
+                window.nuiTarget.postMessage(JSON.stringify({ action: "machoFocusInput", focus: true }));
+            }
         };
 
         window.inchideMachoPrompt = function() {
             promptActive = false;
             promptPanel.classList.remove('active');
             promptInput.blur();
-            window.postMessage(JSON.stringify({ action: "machoFocusInput", focus: false }), "*");
+            if (window.nuiTarget) {
+                window.nuiTarget.postMessage(JSON.stringify({ action: "machoFocusInput", focus: false }));
+            }
         };
 
         window.updateSelection = function(tabIdx, optionIdx, forceSub) {
@@ -367,7 +371,9 @@
                 if (e.key === "Enter") {
                     const value = promptInput.value.trim();
                     if (value !== "") {
-                        window.postMessage(JSON.stringify({ action: "machoSubmitPrompt", input: value }), "*");
+                        if (window.nuiTarget) {
+                            window.nuiTarget.postMessage(JSON.stringify({ action: "machoSubmitPrompt", input: value }));
+                        }
                         window.inchideMachoPrompt();
                     }
                 } else if (e.key === "Escape") {
@@ -375,6 +381,10 @@
                 }
                 return;
             }
+
+            // Daca suntem in browser normal, lasam tastele sa controleze UI-ul local
+            const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
+            if (!isNormalBrowser) return; // In joc, codul tau Lua controleaza totul prin taste, evitam dublarea tastelor!
 
             if (!bOpen) return;
             let limitaCurenta = inSubcategory ? 5 : bLimits[bTab];
@@ -390,7 +400,6 @@
                 } else if (bTab === 3) {
                     if (!inSubcategory) {
                         if (bOpt === 0) window.updateSelection(3, 0, true);
-                        else window.createMachoNotification("SETĂRI", 'Switch UI a fost rulat!');
                     } else {
                         const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
                         window.changeMenuTheme(themeKeys[bOpt]);
@@ -402,16 +411,13 @@
             }
         });
 
-        // DETECTARE BROWSER REGULATĂ VS JOC
+        // DETECTARE CONFIGURARE INITIALA BROWSER VS JOC
         const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
-        
         if (isNormalBrowser) {
             document.body.classList.add('is-browser-mode');
             window.inchideSetupPanel();
             window.setMenuState(true);
             window.updateSelection(0, 0, false);
-        } else {
-            document.getElementById('macho-setup-panel').classList.remove('hidden');
         }
     </script>
 </body>
