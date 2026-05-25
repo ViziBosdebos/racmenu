@@ -12,7 +12,7 @@
             --accent-glow: rgba(78, 5, 160, 0.45);
             --accent-border: rgba(114, 137, 218, 0.5);
             --tag-color: #7289da;
-            --anim-curve: cubic-bezier(0.25, 1, 0.5, 1);
+            --anim-curve: cubic-bezier(0.25, 1, 0.5, 1); /* Curba ultra-fluida pentru glisare */
         }
 
         html, body {
@@ -73,11 +73,27 @@
         .category-tab { flex: 1; text-align: center; padding: 14px 0; font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.3); text-transform: uppercase; letter-spacing: 1px; transition: color 0.25s ease; position: relative; z-index: 2; }
         .category-tab.active { color: #ffffff; }
         
+        /* BARA SUBȚIRE CARE ALUNECE EFECTIV SUB TABURI */
         .active-line {
-            position: absolute; bottom: 0; left: 0; width: 25%; height: 2px; display: flex; justify-content: center; align-items: center; z-index: 3; pointer-events: none; transition: transform 0.3s var(--anim-curve), width 0.3s var(--anim-curve);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 25%;
+            height: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+            pointer-events: none;
+            transition: transform 0.3s var(--anim-curve), width 0.3s var(--anim-curve);
         }
         .active-line::after {
-            content: ''; width: 75%; height: 100%; background-color: var(--tag-color); box-shadow: 0 0 12px var(--tag-color), 0 0 4px var(--tag-color); border-radius: 2px;
+            content: '';
+            width: 75%;
+            height: 100%;
+            background-color: var(--tag-color);
+            box-shadow: 0 0 12px var(--tag-color), 0 0 4px var(--tag-color);
+            border-radius: 2px;
         }
 
         .menu-content { padding: 22px 20px; display: flex; flex-direction: column; gap: 8px; min-height: 230px; overflow: hidden; background: rgba(13, 14, 18, 0.5); }
@@ -108,28 +124,6 @@
         .menu-option.focused .status-tag { color: var(--tag-color); text-shadow: 0 0 8px var(--tag-color); }
         .submenu-header-info { font-size: 10px; font-weight: 700; color: var(--tag-color); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: flex; justify-content: space-between; }
 
-        /* Stil Prompt Modern Integrat */
-        .macho-prompt-wrapper {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(7, 8, 10, 0.75); backdrop-filter: blur(4px);
-            z-index: 20000; display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        .macho-prompt-wrapper.active { opacity: 1; pointer-events: auto; }
-        .macho-prompt-box {
-            width: 320px; background: rgba(13, 14, 18, 0.98); border: 1px solid var(--accent-border);
-            border-radius: 12px; box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px rgba(var(--accent-color), 0.2);
-            overflow: hidden; animation: promptScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        @keyframes promptScale { from { transform: scale(0.85) translateY(10px); } to { transform: scale(1) translateY(0); } }
-        .macho-prompt-input {
-            width: calc(100% - 32px); margin: 16px; background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 12px 14px;
-            font-size: 14px; color: #ffffff; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .macho-prompt-input:focus { border-color: var(--tag-color); box-shadow: 0 0 10px rgba(var(--accent-color), 0.3); }
-        .macho-prompt-footer { padding: 0 16px 16px 16px; display: flex; justify-content: flex-end; gap: 10px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; }
-
         #notification-container { position: fixed; top: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 99999; pointer-events: none; width: 280px; }
         
         .macho-notify { 
@@ -140,8 +134,14 @@
         }
         .macho-notify.notify-fade-out { animation: notifySlideOut 0.4s cubic-bezier(0.32, 0, 0.67, 0) forwards; }
         
-        @keyframes notifySlideIn { from { opacity: 0; transform: translateX(100%) scale(0.8); } to { opacity: 1; transform: translateX(0) scale(1); } }
-        @keyframes notifySlideOut { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(100%) scale(0.9); } }
+        @keyframes notifySlideIn { 
+            from { opacity: 0; transform: translateX(100%) scale(0.8); } 
+            to { opacity: 1; transform: translateX(0) scale(1); } 
+        }
+        @keyframes notifySlideOut { 
+            from { opacity: 1; transform: translateX(0) scale(1); } 
+            to { opacity: 0; transform: translateX(100%) scale(0.9); } 
+        }
         
         .macho-notify-header { display: flex; justify-content: space-between; align-items: center; }
         .macho-notify-title { font-size: 10px; font-weight: 700; color: var(--tag-color); text-transform: uppercase; letter-spacing: 1.2px; }
@@ -155,19 +155,6 @@
 <body>
 
     <div id="notification-container"></div>
-
-    <div id="macho-prompt-overlay" class="macho-prompt-wrapper">
-        <div class="macho-prompt-box">
-            <div class="setup-header">
-                <div class="setup-header-indicator"></div>
-                <span class="setup-title" id="macho-prompt-title">Introduceți Numărul</span>
-            </div>
-            <input type="number" id="macho-prompt-field" class="macho-prompt-input" placeholder="Scrie valoarea aici..." />
-            <div class="macho-prompt-footer">
-                <span>[ENTER] Confirmă &nbsp;|&nbsp; [ESC] Anulează</span>
-            </div>
-        </div>
-    </div>
 
     <div id="macho-setup-panel" class="setup-keybind-wrapper">
         <div class="setup-header">
@@ -250,9 +237,7 @@
         const setariMainView = document.getElementById('setari-main-view');
         const setariBannersView = document.getElementById('setari-banners-view');
 
-        const promptOverlay = document.getElementById('macho-prompt-overlay');
-        const promptField = document.getElementById('macho-prompt-field');
-
+        // Referinte elemente fixate pentru categorii
         const normalTabs = [
             document.getElementById('tab-self'),
             document.getElementById('tab-weapons'),
@@ -261,7 +246,7 @@
         ];
         const subcategoryTabTitle = document.getElementById('tab-banners-title');
 
-        let bOpen = false, bTab = 0, bOpt = 0, inSubcategory = false, promptOpen = false;
+        let bOpen = false, bTab = 0, bOpt = 0, inSubcategory = false;
         const bLimits = { [0]: 2, [1]: 1, [2]: 2, [3]: 1 };
 
         setupPanel.classList.remove('hidden');
@@ -274,41 +259,52 @@
             setupPanel.classList.add('hidden');
         };
 
-        window.machoTogglePrompt = function(show, titleText) {
-            promptOpen = show;
-            if (show) {
-                if (titleText) document.getElementById('macho-prompt-title').innerText = titleText;
-                promptField.value = "";
-                promptOverlay.classList.add('active');
-                setTimeout(() => promptField.focus(), 50);
-            } else {
-                promptOverlay.classList.remove('active');
-                promptField.blur();
-            }
-        };
-
         window.updateSelection = function(tabIdx, optionIdx, forceSub) {
             bTab = tabIdx; bOpt = optionIdx;
             if (forceSub !== undefined) inSubcategory = forceSub;
 
+            // Logica corecta de ascundere/afisare elemente fara manipulare de innerHTML raw
             if (bTab === 3 && inSubcategory) {
                 setariMainView.style.display = 'none';
                 setariBannersView.style.display = 'flex';
+                
                 normalTabs.forEach(t => t.style.display = 'none');
                 subcategoryTabTitle.style.display = 'block';
-                if (slidingLine) { slidingLine.style.width = '100%'; slidingLine.style.transform = 'translateX(0%)'; }
+
+                if (slidingLine) {
+                    slidingLine.style.width = '100%';
+                    slidingLine.style.transform = 'translateX(0%)';
+                }
             } else {
-                if (bTab === 3) { setariBannersView.style.display = 'none'; setariMainView.style.display = 'flex'; }
-                else { setariBannersView.style.display = 'none'; setariMainView.style.display = 'flex'; inSubcategory = false; }
+                if (bTab === 3) {
+                    setariBannersView.style.display = 'none';
+                    setariMainView.style.display = 'flex';
+                } else {
+                    setariBannersView.style.display = 'none';
+                    setariMainView.style.display = 'flex';
+                    inSubcategory = false;
+                }
+                
                 subcategoryTabTitle.style.display = 'none';
                 normalTabs.forEach(t => t.style.display = 'block');
-                if (slidingLine) { slidingLine.style.width = '25%'; slidingLine.style.transform = `translateX(${tabIdx * 100}%)`; }
+                
+                // Efectul vizual real de mutare prin translatare pura CSS pe axa X
+                if (slidingLine) {
+                    slidingLine.style.width = '25%';
+                    slidingLine.style.transform = `translateX(${tabIdx * 100}%)`;
+                }
             }
 
+            // Gestionare clase active
             if (!inSubcategory) {
                 normalTabs.forEach((cat, idx) => {
-                    if (idx === tabIdx) { cat.classList.add('active'); document.getElementById(`panel-${idx}`).classList.add('active'); }
-                    else { cat.classList.remove('active'); document.getElementById(`panel-${idx}`).classList.remove('active'); }
+                    if (idx === tabIdx) {
+                        cat.classList.add('active');
+                        document.getElementById(`panel-${idx}`).classList.add('active');
+                    } else {
+                        cat.classList.remove('active');
+                        document.getElementById(`panel-${idx}`).classList.remove('active');
+                    }
                 });
             } else {
                 normalTabs.forEach((cat) => cat.classList.remove('active'));
@@ -327,7 +323,7 @@
         window.setMenuState = function(visible) {
             bOpen = visible;
             if (visible) menuBox.classList.add('menu-visible');
-            else { menuBox.classList.remove('menu-visible'); window.machoTogglePrompt(false); }
+            else menuBox.classList.remove('menu-visible');
         };
 
         window.changeMenuTheme = function(themeName) {
@@ -354,20 +350,14 @@
         const isNormalBrowser = !navigator.userAgent.includes("CitizenFX") && (window.invokeNative === undefined);
         if (isNormalBrowser) {
             document.body.classList.add('is-browser-mode');
-            setTimeout(() => { window.inchideSetupPanel(); window.setMenuState(true); window.updateSelection(0, 0, false); }, 50);
+            setTimeout(() => {
+                window.inchideSetupPanel();
+                window.setMenuState(true);
+                window.updateSelection(0, 0, false);
+            }, 50);
 
             window.addEventListener('keydown', function(e) {
                 if (!bOpen) return;
-
-                if (promptOpen) {
-                    if (e.key === "Escape") { window.machoTogglePrompt(false); }
-                    else if (e.key === "Enter") {
-                        let val = promptField.value;
-                        if (val !== "") { window.createMachoNotification("SAI PROMPT", "Trimis: " + val); window.machoTogglePrompt(false); }
-                    }
-                    return;
-                }
-
                 let limitaCurenta = inSubcategory ? 5 : bLimits[bTab];
 
                 if (e.key === "q" || e.key === "Q") { if (!inSubcategory && bTab > 0) window.updateSelection(bTab - 1, 0, false); }
@@ -384,8 +374,6 @@
                             const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
                             window.changeMenuTheme(themeKeys[bOpt]);
                         }
-                    } else if (bTab === 2 && bOpt === 2) {
-                        window.machoTogglePrompt(true, "SAI - Introduceti Numarul");
                     } else {
                         const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
                         window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
