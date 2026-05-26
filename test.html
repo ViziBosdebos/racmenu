@@ -63,7 +63,7 @@
             width: calc(100% - 32px); margin: 16px; padding: 14px; background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 8px; color: #ffffff;
             font-size: 13px; outline: none; transition: all 0.2s ease;
-            user-select: text !important; -webkit-user-select: text !important; /* Permite selectarea și scrierea textului nativ în input */
+            user-select: text !important; -webkit-user-select: text !important;
         }
         .prompt-input-field:focus {
             background: rgba(var(--accent-color), 0.05); border-color: rgb(var(--accent-color));
@@ -254,13 +254,15 @@
             saiInputBox.blur();
         };
 
-        // Blocăm complet propagarea tastelor apăsate când scriem în input field
+        // Modificat inteligent ca să nu crape în browser nativ (dacă window.invokeNative nu există)
         saiInputBox.addEventListener('keydown', function(e) {
             e.stopPropagation(); 
 
             if (e.key === "Escape") {
                 if (window.invokeNative) {
                     window.invokeNative('ExecuteCommand', 'macho_sai_input __INCHIDE_PROMPT__');
+                } else {
+                    window.createMachoNotification("SAI BROWSER", "Prompt închis.");
                 }
                 window.inchidePromptSAI();
             } else if (e.key === "Enter") {
@@ -270,6 +272,10 @@
                         window.invokeNative('ExecuteCommand', 'macho_sai_input ' + textIntrodus);
                     } else {
                         window.invokeNative('ExecuteCommand', 'macho_sai_input __INCHIDE_PROMPT__');
+                    }
+                } else {
+                    if (textIntrodus.trim() !== "") {
+                        window.createMachoNotification("SAI BROWSER", "Executat text local: " + textIntrodus);
                     }
                 }
                 window.inchidePromptSAI();
