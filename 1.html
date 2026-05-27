@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reason Menu Custom</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
+
+        :root {
+            --accent-color: 78, 5, 160;
+            --accent-glow: rgba(78, 5, 160, 0.45);
+            --accent-border: rgba(114, 137, 218, 0.5);
+            --tag-color: #7289da;
+        }
+
+        html, body {
+            background-color: rgba(0, 0, 0, 0) !important;
+            background: transparent !important;
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            overflow: hidden; position: relative;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
+
+        .setup-keybind-wrapper {
+            position: absolute; top: 40px; left: 40px; width: 300px;
+            background: rgba(13, 14, 18, 0.98); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 20px; color: #fff; z-index: 9999;
+        }
+        .setup-header { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; color: rgb(var(--accent-color)); }
+        .setup-desc { font-size: 12px; color: #8a8e94; margin-bottom: 15px; font-weight: 400; }
+        .setup-box { background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); border-radius: 6px; padding: 20px; text-align: center; font-size: 13px; color: #ced4da; }
+        .setup-box span { font-weight: 700; color: #fff; display: block; margin-top: 5px; font-size: 15px; text-transform: uppercase; background: rgba(var(--accent-color), 0.2); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(var(--accent-color), 0.4); display: inline-block; }
+
+        .menu-container {
+            position: absolute; top: 40px; left: 40px; width: 520px; height: 350px;
+            background: rgba(10, 11, 14, 0.96); border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            display: none; flex-direction: column; overflow: hidden;
+            animation: menuFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes menuFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .menu-header {
+            height: 48px; border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 18px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.01), transparent);
+        }
+        .header-title-sec { display: flex; align-items: center; gap: 8px; }
+        .header-dot { width: 6px; height: 6px; background-color: rgb(var(--accent-color)); border-radius: 50%; box-shadow: 0 0 8px rgb(var(--accent-color)); }
+        .header-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #f8f9fa; }
+        .header-tag { font-size: 10px; font-weight: 700; background: rgba(114, 137, 218, 0.12); color: var(--tag-color); padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(114, 137, 218, 0.2); text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-keybind { font-size: 11px; color: #6c757d; font-weight: 500; background: rgba(255,255,255,0.03); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.02); }
+
+        .menu-tabs { height: 38px; background: rgba(7, 8, 10, 0.5); border-bottom: 1px solid rgba(255, 255, 255, 0.02); display: flex; align-items: center; padding: 0 10px; gap: 4px; }
+        .menu-tab { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #495057; padding: 6px 14px; border-radius: 5px; transition: all 0.15s ease; position: relative; }
+        .menu-tab.active { color: #fff; background: rgba(255,255,255,0.03); font-weight: 700; }
+        .menu-tab.active::after { content: ''; position: absolute; bottom: -5px; left: 14px; right: 14px; height: 2px; background: rgb(var(--accent-color)); box-shadow: 0 0 6px rgb(var(--accent-color)); border-radius: 2px; }
+
+        .menu-content { flex: 1; padding: 14px 18px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.15)); }
+        .menu-content::-webkit-scrollbar { width: 4px; }
+        .menu-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+
+        .menu-panel { display: none; flex-direction: column; gap: 5px; }
+        .menu-panel.active { display: flex; }
+
+        .menu-option {
+            height: 38px; background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.015);
+            border-radius: 6px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 14px; transition: all 0.1s ease;
+        }
+        .menu-option span { font-size: 12px; font-weight: 500; color: #adb5bd; letter-spacing: 0.3px; }
+        .menu-option .opt-status { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #495057; background: rgba(255,255,255,0.02); padding: 2px 6px; border-radius: 4px; }
+        
+        .menu-option.selected {
+            background: linear-gradient(90deg, rgba(var(--accent-color), 0.12) 0%, rgba(var(--accent-color), 0.02) 100%);
+            border-color: rgba(var(--accent-color), 0.35); box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .menu-option.selected span { color: #ffffff; font-weight: 600; }
+        .menu-option.selected .opt-status { color: rgb(var(--accent-color)); background: rgba(var(--accent-color), 0.15); }
+
+        .noti-container { position: absolute; top: 30px; right: 30px; width: 280px; display: flex; flex-direction: column; gap: 10px; pointer-events: none; z-index: 100000; }
+        .macho-noti {
+            background: rgba(11, 12, 15, 0.96); border-left: 3px solid rgb(var(--accent-color));
+            border-top: 1px solid rgba(255,255,255,0.03); border-right: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03);
+            padding: 12px 14px; border-radius: 0 6px 6px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            transform: translateX(320px); animation: notiIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes notiIn { to { transform: translateX(0); } }
+        .macho-noti.fade-out { animation: notiOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes notiOut { to { transform: translateX(320px); opacity: 0; } }
+        .noti-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: rgb(var(--accent-color)); letter-spacing: 1px; margin-bottom: 3px; }
+        .noti-desc { font-size: 11px; color: #d1d4d7; font-weight: 400; line-height: 14px; }
+
+        .is-browser-mode { background-color: #1c1e22 !important; background: #1c1e22 !important; }
+    </style>
+</head>
+<body>
+
+    <div class="noti-container" id="noti-box"></div>
+
+    <div id="sai-prompt-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 8, 0.85); z-index: 10000; align-items: center; justify-content: center; border-radius: 10px; backdrop-filter: blur(3px);">
+        <div style="background: #0d0e12; border: 1px solid rgb(var(--accent-color)); padding: 20px; border-radius: 8px; width: 85%; box-shadow: 0 10px 30px rgba(0,0,0,0.7);">
+            <div style="color: rgb(var(--accent-color)); font-weight: bold; font-size: 11px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">SAI Prompt Terminal</div>
+            <input type="text" id="sai-input-field" style="width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.08); padding: 12px; color: #fff; outline: none; font-family: monospace; font-size: 13px; border-radius: 4px;" placeholder="Introdu scriptul sau comanda de rulat..." autocomplete="off">
+            <div style="font-size: 9px; color: #555; margin-top: 8px; font-weight: 500;">Apasă [ENTER] pentru a trimite spre execuție în joc sau lăsați gol pentru anulare.</div>
+        </div>
+    </div>
+
+    <div class="menu-container" id="main-menu">
+        <div class="menu-header">
+            <div class="header-title-sec">
+                <div class="header-dot"></div>
+                <div class="header-title">Reason Menu</div>
+                <div class="header-tag">Macho Dev</div>
+            </div>
+            <div class="header-keybind" id="menu-key-lbl">BIND: -</div>
+        </div>
+
+        <div class="menu-tabs">
+            <div class="menu-tab" id="tab-0">Self</div>
+            <div class="menu-tab" id="tab-1">Weapons</div>
+            <div class="menu-tab" id="tab-2">Exploits</div>
+            <div class="menu-tab" id="tab-3">Setări</div>
+        </div>
+
+        <div class="menu-content">
+            <div class="menu-panel" id="panel-0">
+                <div class="menu-option"><span>Heal Player</span><div class="opt-status">EXEC</div></div>
+                <div class="menu-option"><span>Armor Player</span><div class="opt-status">EXEC</div></div>
+                <div class="menu-option"><span>Suicide</span><div class="opt-status">EXEC</div></div>
+            </div>
+            <div class="menu-panel" id="panel-1">
+                <div class="menu-option"><span>Give All Weapons</span><div class="opt-status">EXEC</div></div>
+                <div class="menu-option"><span>Remove All Weapons</span><div class="opt-status">EXEC</div></div>
+            </div>
+            <div class="menu-panel" id="panel-2">
+                <div class="menu-option"><span>Anticheat Scanner</span><div class="opt-status">SCAN</div></div>
+                <div class="menu-option"><span>Ruleaza Bypass global</span><div class="opt-status">BYPASS</div></div>
+                <div class="menu-option"><span>SAI Prompt Exec</span><div class="opt-status">TERMINAL</div></div>
+            </div>
+            <div class="menu-panel" id="panel-3">
+                <div class="menu-option"><span>Schimbă Tema UI</span><div class="opt-status">SUB</div></div>
+                <div class="menu-option"><span>Switch UI Mode</span><div class="opt-status">TOGGLE</div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const isNormalBrowser = !navigator.userAgent.includes("FiveM") && !window.invokeNative;
+        let bTab = 0, bOpt = 0, inSubcategory = false;
+        let activeTheme = 'default';
+
+        const themes = {
+            'default': { accent: '78, 5, 160', glow: 'rgba(78, 5, 160, 0.45)', tag: '#7289da' },
+            'orange':  { accent: '235, 94, 40', glow: 'rgba(235, 94, 40, 0.45)', tag: '#eb5e28' },
+            'Nicu':    { accent: '0, 180, 216', glow: 'rgba(0, 180, 216, 0.45)', tag: '#00b4d8' },
+            'matrix':  { accent: '0, 200, 83',  glow: 'rgba(0, 200, 83, 0.45)',  tag: '#00c853' },
+            'Carlito': { accent: '217, 4, 41',  glow: 'rgba(217, 4, 41, 0.45)',  tag: '#d90429' },
+            'blood':   { accent: '106, 4, 15',  glow: 'rgba(106, 4, 15, 0.45)',  tag: '#6a040f' }
+        };
+
+        window.changeMenuTheme = function(themeName) {
+            if (!themes[themeName]) return;
+            activeTheme = themeName;
+            const t = themes[themeName];
+            document.documentElement.style.setProperty('--accent-color', t.accent);
+            document.documentElement.style.setProperty('--accent-glow', t.glow);
+            document.documentElement.style.setProperty('--tag-color', t.tag);
+        };
+
+        window.updateSetupDisplay = function(keyText) {
+            document.getElementById("key-display").innerText = keyText;
+        };
+
+        window.inchideSetupPanel = function() {
+            document.getElementById("setup-panel").style.display = "none";
+        };
+
+        window.setMenuState = function(visible, keyName) {
+            document.getElementById("main-menu").style.display = visible ? "flex" : "none";
+            if (keyName) document.getElementById("menu-key-lbl").innerText = `BIND: ${keyName.toUpperCase()}`;
+        };
+
+        window.updateSelection = function(tabIndex, optionIndex, subcatState) {
+            bTab = tabIndex; bOpt = optionIndex; inSubcategory = subcatState;
+            
+            document.querySelectorAll('.menu-tab').forEach((el, idx) => {
+                el.classList.toggle('active', idx === bTab);
+            });
+            document.querySelectorAll('.menu-panel').forEach((el, idx) => {
+                el.classList.toggle('active', idx === bTab);
+            });
+
+            const panel = document.getElementById(`panel-${bTab}`);
+            if (panel) {
+                const options = panel.querySelectorAll('.menu-option');
+                options.forEach((el, idx) => {
+                    el.classList.toggle('selected', idx === bOpt);
+                });
+            }
+        };
+
+        window.createMachoNotification = function(title, desc) {
+            const container = document.getElementById("noti-box");
+            const noti = document.createElement("div");
+            noti.className = "macho-noti";
+            noti.innerHTML = `<div class="noti-title">${title}</div><div class="noti-desc">${desc}</div>`;
+            container.appendChild(noti);
+            setTimeout(() => { noti.classList.add("fade-out"); setTimeout(() => noti.remove(), 300); }, 3500);
+        };
+
+        // --- FUNCȚII JAVASCRIPT EXCLUSIVE PENTRU PROMPT SAI (Adăugat) ---
+        window.deschidePromptSAI = function() {
+            document.getElementById("sai-prompt-container").style.display = "flex";
+            const inputField = document.getElementById("sai-input-field");
+            inputField.value = "";
+            setTimeout(() => { inputField.focus(); }, 40);
+
+            // Cerem executorului din Lua să ne ofere focusul pe tastatură în joc
+            if (!isNormalBrowser) {
+                fetch(`https://${GetParentResourceName()}/solicitaFocusSAI`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                    body: JSON.stringify({ starea: true })
+                }).catch(() => {});
+            }
+        };
+
+        document.getElementById("sai-input-field").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                const textVal = this.value;
+                document.getElementById("sai-prompt-container").style.display = "none";
+
+                if (!isNormalBrowser) {
+                    // Oprim focusul NUI în FiveM
+                    fetch(`https://${GetParentResourceName()}/solicitaFocusSAI`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                        body: JSON.stringify({ starea: false })
+                    }).catch(() => {});
+
+                    // Trimitem textul colectat spre execuție în Lua doar dacă nu e gol
+                    if (textVal.trim() !== "") {
+                        fetch(`https://${GetParentResourceName()}/trimiteTextSAI`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                            body: JSON.stringify({ text: textVal })
+                        }).catch(() => {});
+                    }
+                } else {
+                    if (textVal.trim() !== "") {
+                        window.createMachoNotification("SAI LOCAL", "Text: " + textVal);
+                    }
+                }
+            }
+        });
+
+        // Evenimentul tău global existent de control din săgeți
+        window.addEventListener("keydown", function(e) {
+            // Dacă promptul SAI e deschis pe ecran, blocăm temporar controalele meniului principal
+            if (document.getElementById("sai-prompt-container").style.display === "flex") {
+                return;
+            }
+
+            if (e.key === "Backspace" && bTab === 3 && inSubcategory) { 
+                window.updateSelection(3, 0, false); 
+                window.createMachoNotification("SETĂRI", "Te-ai întors în meniul principal."); 
+            }
+            else if (e.key === "Enter") {
+                if (bTab === 3) {
+                    if (!inSubcategory) {
+                        if (bOpt === 0) window.updateSelection(3, 0, true);
+                        else window.createMachoNotification("SETĂRI", 'Switch UI a fost rulat!');
+                    } else {
+                        const themeKeys = ['default', 'orange', 'Nicu', 'matrix', 'Carlito', 'blood'];
+                        window.changeMenuTheme(themeKeys[bOpt]);
+                    }
+                } else {
+                    if (bTab === 2 && bOpt === 2) {
+                        window.deschidePromptSAI();
+                    } else {
+                        const optTxt = document.getElementById(`panel-${bTab}`).querySelectorAll('.menu-option')[bOpt].querySelector('span').innerText;
+                        window.createMachoNotification({0:"SELF",1:"WEAPONS",2:"EXPLOITS"}[bTab], `Executat: ${optTxt}`);
+                    }
+                }
+            }
+        });
+
+        if (isNormalBrowser) {
+            document.body.classList.add('is-browser-mode');
+            setTimeout(() => {
+                window.inchideSetupPanel();
+                window.setMenuState(true);
+                window.updateSelection(0, 0, false);
+            }, 50);
+        }
+    </script>
+</body>
+</html>
